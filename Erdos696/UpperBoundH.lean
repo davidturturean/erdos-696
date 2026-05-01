@@ -738,9 +738,10 @@ private lemma IsDivisorChain.tail_cons {n d e : ℕ} {rest : List ℕ}
     have := hmod j hj
     simpa [j] using this
 
-/-- The first two entries of a nontrivial divisor chain satisfy the chain relation. -/
+/-- The first two entries of a nontrivial divisor chain satisfy the chain relation.
+The mod condition is the paper-faithful `e ≡ 1 (mod d)`, which is vacuous for `d = 1`. -/
 private lemma IsDivisorChain.head_rel {n d e : ℕ} {rest : List ℕ}
-    (hds : IsDivisorChain n (d :: e :: rest)) : d < e ∧ e % d = 1 := by
+    (hds : IsDivisorChain n (d :: e :: rest)) : d < e ∧ Nat.ModEq d e 1 := by
   rcases hds with ⟨_hdiv, hpair, hmod⟩
   constructor
   · exact hpair.rel_head_tail (by simp)
@@ -774,7 +775,7 @@ private lemma divisor_chain_length_aux {n T : ℕ}
   | cons e rest ih =>
       intro hds
       have htail : IsDivisorChain n (e :: rest) := hds.tail_cons
-      have hrel : d < e ∧ e % d = 1 := hds.head_rel
+      have hrel_modeq : d < e ∧ Nat.ModEq d e 1 := hds.head_rel
       have hdvd : d ∣ n := (hds.1 d (by simp)).2
       have hedvd : e ∣ n := (hds.1 e (by simp)).2
       have hre : Urank e ≤ Urank n := Urank_le_of_mem_divisorChain hn htail (by simp)
@@ -791,6 +792,15 @@ private lemma divisor_chain_length_aux {n T : ℕ}
             omega
           exact (Nat.succ_le_succ htail_bound).trans hbudget
       · intro hTd
+        -- In this branch T ≤ d and 100 ≤ T, so d ≥ 100 ≥ 2.
+        -- Hence Nat.ModEq d e 1 is equivalent to e % d = 1 (since 1 % d = 1 for d ≥ 2).
+        have hd_ge_2 : 2 ≤ d := by linarith [hT100, hTd]
+        have hmod_old : e % d = 1 := by
+          have h := hrel_modeq.2
+          show e % d = 1
+          have : e % d = 1 % d := h
+          rwa [Nat.mod_eq_of_lt (by linarith : 1 < d)] at this
+        have hrel : d < e ∧ e % d = 1 := ⟨hrel_modeq.1, hmod_old⟩
         have hno_bad : ¬ IsHBadPair d e := hnoT d e hTd hdvd hedvd
         have hT_e_real : (T : ℝ) ≤ (e : ℝ) := by exact_mod_cast (hTd.trans hrel.1.le)
         have hrank_e : 6 ≤ Urank e := six_le_Urank_of_Um_five_lt (hTU.trans_le hT_e_real)

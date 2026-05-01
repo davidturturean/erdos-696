@@ -43,12 +43,19 @@ def IsPrimeChain (n : ℕ) (ps : List ℕ) : Prop :=
 every entry divides `n`, the list is strictly increasing, every entry is
 at least 1, and consecutive entries satisfy `d_{i+1} ≡ 1 (mod d_i)`.
 
-This is the predicate underlying `HChain n` in §1 of the paper. -/
+This is the predicate underlying `HChain n` in §1 of the paper.
+
+We use `Nat.ModEq` (which checks `e % d = 1 % d`) rather than the raw
+`e % d = 1`.  These agree when `d ≥ 2` (so the prime-chain definition
+is unaffected), but for `d = 1` the paper's vacuous-modulo-1 convention
+requires the `ModEq` form: `e ≡ 1 [MOD 1]` is true (everything is congruent
+mod 1), while `e % 1 = 1` is false (since `e % 1 = 0`).  Paper §7 (line 1891)
+constructs lower-bound chains starting with `d_1 = 1`. -/
 def IsDivisorChain (n : ℕ) (ds : List ℕ) : Prop :=
   (∀ d ∈ ds, 1 ≤ d ∧ d ∣ n) ∧
   ds.Pairwise (· < ·) ∧
   (∀ i : Fin ds.length, ∀ hi : i.val + 1 < ds.length,
-      ds.get ⟨i.val + 1, hi⟩ % ds.get i = 1)
+      Nat.ModEq (ds.get i) (ds.get ⟨i.val + 1, hi⟩) 1)
 
 /-- `h(n)` of the paper: the largest length of a prime chain dividing `n`,
 with `hChain 1 = 0` by convention. -/
@@ -111,7 +118,15 @@ lemma hChain_le_HChain (n : ℕ) : hChain n ≤ HChain n := by
       ∀ {m : ℕ} {ps : List ℕ}, IsPrimeChain m ps → IsDivisorChain m ps := by
     intro m ps hps
     rcases hps with ⟨hprime, hpair, hmod⟩
-    exact ⟨fun d hd => ⟨(hprime d hd).1.one_le, (hprime d hd).2⟩, hpair, hmod⟩
+    refine ⟨fun d hd => ⟨(hprime d hd).1.one_le, (hprime d hd).2⟩, hpair, ?_⟩
+    intro i hi
+    -- IsPrimeChain has `% = 1` form; IsDivisorChain has `Nat.ModEq` form.
+    -- For primes p ≥ 2, `1 % p = 1`, so the two forms agree.
+    have hp_mem : ps.get i ∈ ps := List.get_mem _ i
+    have hp_one_lt : 1 < ps.get i := (hprime _ hp_mem).1.one_lt
+    show ps.get ⟨i.val + 1, hi⟩ % ps.get i = 1 % ps.get i
+    rw [Nat.mod_eq_of_lt hp_one_lt]
+    exact hmod i hi
   by_cases hn : n = 0
   · subst n
     have prime_chain_len0 :

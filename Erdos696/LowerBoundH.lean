@@ -1266,8 +1266,7 @@ private lemma HCEStrict_of_hChainEndpoint?_some {A B : ℝ} {m₀ : ℕ} :
                     List.pairwise_iff_get.mp hpair ⟨0, h_orig_pos⟩ ⟨k - 1, hk_pos⟩ h_0_lt
                   rw [h_last_eq'] at h_ds_lt
                   omega
-          have h_1_mod_d_prev : 1 % d_prev = 1 := Nat.one_mod_eq_one.mpr (by omega)
-          rw [← h_1_mod_d_prev]
+          -- Goal is `Nat.ModEq d_prev d 1`, i.e., `d % d_prev = 1 % d_prev` — exactly h_mod.
           exact h_mod
     · -- length = k + 1.
       rw [List.length_append, List.length_singleton, hlen_prev]
@@ -1578,38 +1577,11 @@ private lemma hGreedyStageFailure_iff
     exact hnotgood
       ((hChainAdmissibleNext_nonempty_iff_GoodCompositeSuccessor hA h_d_pos).mp h_admissible_nonempty)
 
-/-- For R ≥ 2, HChainEvent equals HChainEventStrict.
-
-The IsDivisorChain mod constraint `ds[1] % ds[0] = 1` forces `ds[0] ≥ 2`
-when chain length ≥ 2: if `ds[0] = 1`, then `ds[1] % 1 = 0 ≠ 1`. -/
-private lemma HChainEventStrict_iff_HChainEvent_of_two_le
-    {A B : ℝ} {m₀ R : ℕ} {n : ℕ} (hR : 2 ≤ R) :
-    HChainEventStrict A B m₀ R n ↔ HChainEvent A B m₀ R n := by
-  constructor
-  · exact HChainEvent_of_strict
-  · intro hH
-    rcases hH with ⟨ds, hchain, hlen, hprop⟩
-    refine ⟨ds, hchain, hlen, hprop, ?_⟩
-    right
-    have h_pos : 0 < ds.length := by rw [hlen]; omega
-    refine ⟨h_pos, ?_⟩
-    -- Show ds[0] ≥ 2 via the mod constraint at index 0.
-    rcases hchain with ⟨hdiv, _hpair, hmod⟩
-    have h_first_in : ds.get ⟨0, h_pos⟩ ∈ ds := List.get_mem _ _
-    have h_first_ge_1 : 1 ≤ ds.get ⟨0, h_pos⟩ := (hdiv _ h_first_in).1
-    -- Need ds[0] ≥ 2.  Suppose ds[0] = 1.  Then mod constraint:
-    -- ds[1] % ds[0] = ds[1] % 1 = 0, but constraint says = 1.  Contradiction.
-    by_contra h_lt_2
-    push_neg at h_lt_2
-    -- h_lt_2 : ds.get ⟨0, h_pos⟩ < 2.  So ds.get ⟨0, h_pos⟩ = 1.
-    have h_eq_1 : ds.get ⟨0, h_pos⟩ = 1 := by omega
-    -- Use the mod constraint at index 0.
-    have h_pos_1 : 0 + 1 < ds.length := by rw [hlen]; omega
-    have h_mod := hmod ⟨0, h_pos⟩ h_pos_1
-    rw [h_eq_1] at h_mod
-    -- h_mod : ds.get ⟨1, _⟩ % 1 = 1.  But x % 1 = 0 for any x.
-    have h_mod_one : ds.get ⟨0 + 1, h_pos_1⟩ % 1 = 0 := Nat.mod_one _
-    omega
+-- NOTE: Under the paper-faithful IsDivisorChain definition (using `Nat.ModEq d e 1`,
+-- which is vacuous for d=1), chains can start with `ds[0] = 1`.  So the previous
+-- lemma `HChainEventStrict_iff_HChainEvent_of_two_le` no longer holds: only the
+-- forward direction (`HChainEvent_of_strict`) is true.  Callers that need the
+-- forward direction use `HChainEvent_of_strict` directly.
 
 /-- **HCEStrict at length 1 = GoodCompositeSuccessor at modulus 1 (paper line 1888-1909).**
 
@@ -1928,11 +1900,8 @@ private lemma HCEStrict_failure_extract_d
           have h_idx_eq : i.val + 1 = ds.length := by rw [hlen]; omega
           simp [List.get_eq_getElem, List.getElem_append_right, h_idx_eq]
         rw [h_get_i, h_get_i1]
-        -- e % d = 1 from ModEq d e 1 (since ModEq d e 1 ↔ e ≡ 1 mod d ↔ e % d = 1 % d).
-        -- For d ≥ 2: 1 % d = 1.  So e % d = 1.
-        have h_e_mod_d : e % d = 1 % d := hTcong
-        have h_1_mod_d : 1 % d = 1 := Nat.one_mod_eq_one.mpr (by omega)
-        rw [h_e_mod_d, h_1_mod_d]
+        -- Goal is `Nat.ModEq d e 1` (paper-faithful form), which is exactly hTcong.
+        exact hTcong
   · -- length = k + 1.
     rw [List.length_append, List.length_singleton, hlen]
   · -- Constraints for each index k_idx < k+1.
@@ -4576,7 +4545,7 @@ private lemma HChainEvent_pmodel_bound_via_greedy
     apply not_hGreedySucc_of_not_HChainEventStrict
     intro hHCE
     apply hnE
-    exact (HChainEventStrict_iff_HChainEvent_of_two_le hR_ge_2).mp hHCE
+    exact HChainEvent_of_strict hHCE
   have h_card_le_greedy : (Nat.card {r : Fin M //
         ¬ HChainEvent A B (Nat.sqrt L) (L - Nat.sqrt L - 4) r.val} : ℝ) ≤
       (Nat.card {r : Fin M //
