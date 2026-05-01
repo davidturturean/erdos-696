@@ -2,7 +2,7 @@
 
 > **Normal orders of the chain functions $h(n)$ and $H(n)$**
 >
-> David Turturean, MIT — `davidct@mit.edu` — April 2026
+> David Turturean, MIT, `davidct@mit.edu` (preprint April 2026; Lean 4 formalization May 2026)
 
 A complete proof and Lean 4 formalization of [Erdős Problem #696](https://www.erdosproblems.com/696).
 
@@ -34,11 +34,11 @@ Here:
 │   ├── Defs.lean              # Definitions of h, H, logStar, almostAll
 │   ├── CompositeSuccessor.lean    # Paper §6.2 Lemma 6.2 (Composite Successor)
 │   ├── SubsetProduct.lean         # Paper §5 Lemma 6.1 (Subset Product Successor)
-│   ├── Tower.lean                 # Paper §1.2 — exponential tower function
-│   ├── UpperBoundH.lean           # Paper §3 — upper bound for H(n)
-│   ├── UpperBoundLittleH.lean     # Paper §4 — upper bound for h(n)
-│   ├── LowerBoundH.lean           # Paper §7 — lower bound for H(n) (largest file)
-│   ├── LowerBoundLittleH.lean     # Paper §5 — lower bound for h(n)
+│   ├── Tower.lean                 # Paper §1.2: exponential tower function
+│   ├── UpperBoundH.lean           # Paper §3: upper bound for H(n)
+│   ├── UpperBoundLittleH.lean     # Paper §4: upper bound for h(n)
+│   ├── LowerBoundH.lean           # Paper §7: lower bound for H(n) (largest file)
+│   ├── LowerBoundLittleH.lean     # Paper §5: lower bound for h(n)
 │   └── PmodelManualHelpers.lean   # Independent prime-divisibility model bridges
 ├── paper/
 │   ├── erdos_696_paper.tex    # LaTeX manuscript
@@ -83,7 +83,7 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 | `brun_titchmarsh` | Lemma 2.2 | Iwaniec-Kowalski, *Analytic Number Theory*, AMS Colloquium Publ. 53, **Theorem 6.6** |
 | `mertens` | Lemma 2.3 | F. Mertens, *Ein Beitrag zur analytischen Zahlentheorie*, **J. reine angew. Math. 78 (1874), 46–62** (verified directly against Göttingen GDZ PPN243919689_0078); also Hardy-Wright, *Introduction to the Theory of Numbers*, 6th ed., **Theorem 427** (weaker `o(1)` form) |
 
-#### 1. `siegel_walfisz` — Davenport §22 eq. (4)
+#### 1. `siegel_walfisz` (Davenport §22 eq. (4))
 
 > *Let `N` be any positive constant.  Then there exists a positive number `C₃(N)`, depending only on `N`, such that if `q ≤ (log x)^N` then*
 > $$\psi(x; q, a) = \frac{x}{\varphi(q)} + O\left( x \cdot \exp(-C_3(N) \sqrt{\log x}) \right)$$
@@ -96,11 +96,15 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
     |π(t; q, a) - Li(t)/φ(q)| ≤ C · t · exp(-c · √(log t))
 ```
 
-#### 2. `brun_titchmarsh` — Iwaniec-Kowalski Theorem 6.6
+**Strength actually used by the proof:** the `exp(-c √log)` rate is *not* essential. Paper §2 (Remark "Amount of Siegel-Walfisz actually needed") explicitly states that any error of the form `O_{A,B}((log X)^{-B})` for some fixed large `B ≥ 3` suffices for all later applications. The stronger exponential form is axiomatized "to keep the notation clean" (paper's words). A weaker axiom would suffice; the strong form is standard textbook.
+
+#### 2. `brun_titchmarsh` (Iwaniec-Kowalski Theorem 6.6)
 
 > *For `(a, q) = 1` and `1 ≤ q < y`,*
 > $$\pi(x + y; q, a) - \pi(x; q, a) < \frac{2y}{\varphi(q) \log(y/q)} + O\left(\frac{y}{q \log^2(y/q)}\right)$$
 > *where the implied constant is absolute.*
+
+(*"Implied constant" is the constant hidden inside the `O(...)`: i.e., there is a universal `C > 0`, independent of `x, y, q, a`, such that the error term is at most `C · y / (q log²(y/q))`. The Lean `axiom` absorbs this and the leading `2y/(φ(q) log(y/q))` into a single constant `C_BT`.*)
 
 **Lean form** (specialization to `x = 0`, error absorbed into one constant):
 ```lean
@@ -108,11 +112,11 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
   π(t; q, a) ≤ C_BT · t / (φ(q) · log(t/q))
 ```
 
-#### 3. `mertens` — Mertens' second theorem (1874)
+#### 3. `mertens` (Mertens' second theorem, 1874)
 
 **Verified directly** against Mertens' 1874 paper (Göttingen GDZ digitized scan, PPN243919689_0078, pp. 46–62):
 
-- p. 54 eq. (17): Mertens computes the constant `𝔆 − H = lim_{G→∞} {∑_{q=2}^{G} 1/q − log log G} = 0.2614972128` (matches modern Meissel–Mertens constant `M ≈ 0.2614972128…`).
+- p. 54 eq. (17): Mertens computes the constant `lim_{G→∞} { ∑_{q=2}^{G} 1/q − log log G } = 0.2614972128` (matches modern Meissel-Mertens constant `M ≈ 0.2614972128…`; in Mertens' notation this is the difference of two of his constants, written with Fraktur letters).
 - p. 56: Mertens proves the explicit bound `|ε|, |ε'| ≤ (2+C)/log(G+1) + 1/(G·log G)`, asymptotically `O(1/log G)`.
 
 > *There is an absolute constant `M ∈ ℝ` (the Meissel–Mertens constant, `M ≈ 0.2614972128…`) such that, for all `t ≥ 2`,*
@@ -128,8 +132,8 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 
 ### Two additional cited inputs are *formally proved* here (not axioms)
 
-- **`chebyshev_theta`** (Lemma 2.4) — derived from `Mathlib.NumberTheory.Chebyshev.theta_le_log4_mul_x` (`Cθ := log 4`).
-- **`crt_transfer`** (Lemma 2.7) — proved by elementary CRT counting (~150 LOC).
+- **`chebyshev_theta`** (Lemma 2.4): derived from `Mathlib.NumberTheory.Chebyshev.theta_le_log4_mul_x` (`Cθ := log 4`).
+- **`crt_transfer`** (Lemma 2.7): proved by elementary CRT counting (~150 LOC).
 
 ### Verifying the dependency chain
 
@@ -140,7 +144,11 @@ should report exactly the three axioms above (plus Lean's built-in `Classical.ch
 
 ## How it was made
 
-This work was assembled with substantial AI assistance. See the *Acknowledgement of AI assistance* section in [`paper/erdos_696_paper.tex`](paper/erdos_696_paper.tex) for full disclosure.
+This work was assembled with substantial AI assistance.
+
+* **Preprint (paper/):** result statement and four-turn proof sketch produced by GPT-5.5-Pro (extended); writeup assembled and patched by Claude Opus working with GPT-5.5-Pro (extended thinking) inside Claude Code. See the *Acknowledgement of AI assistance* section in [`paper/erdos_696_paper.tex`](paper/erdos_696_paper.tex) for full disclosure.
+
+* **Formalization (Erdos696/):** the ~19,200 lines of Lean 4 source against Mathlib v4.28.0, mirroring the manuscript section by section, were produced by **Claude Opus 4.7 (Max Thinking) running inside Claude Code**.
 
 ## Citation
 
