@@ -40,18 +40,21 @@ venv/
 *~
 \#*#
 
-## Project-specific
+## Project-specific (private workflow notes; not for publication)
 *.backup*
-CLOSURE_PLAN*.md
-SWARM_*.md
-AGENT_*.md
-LITERATURE_AUDIT.md
-NUMERICAL_FINDINGS.md
-REFEREE_CRITIQUE.md
-mega_prompt.md
-LEAN_BLUEPRINT.md
-turn_*.md
+*.md.local
+*.private.md
+private/
 archive/
+*_PLAN*.md
+*_NOTES*.md
+*_AUDIT.md
+*_FINDINGS.md
+*_CRITIQUE.md
+*_BLUEPRINT.md
+*prompt*.md
+turn_*.md
+iteration_*.md
 archives/
 lean_snapshot_*/
 .backups/
