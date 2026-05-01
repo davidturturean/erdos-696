@@ -62,17 +62,14 @@ with `hChain 1 = 0` by convention. -/
 noncomputable def hChain (n : ℕ) : ℕ :=
   sSup {ℓ | ∃ ps : List ℕ, IsPrimeChain n ps ∧ ps.length = ℓ}
 
-/-- `H(n)` of the paper: the largest length of a divisor chain of `n`.
+/-- `H(n)` of the paper: the largest length of a divisor chain of `n`,
+with `HChain 1 = 0` by paper convention (paper line 88).
 
-**Convention difference at n = 1.**  Paper line 88 sets `H(1) = 0` by fiat.
-Lean's definition gives `HChain 1 = 1` because the singleton chain `[1]` is
-a valid length-1 divisor chain of `1` (`1 ∣ 1` and the pairwise/mod conjuncts
-are vacuous).  This single-point discrepancy is **asymptotically vacuous**:
-the main theorem `erdos_696` quantifies over almost all `n` (excluding any
-finite exception set including `n = 1`), so the difference does not appear
-in the asymptotic statement. -/
+Without the `n = 1` special case the singleton chain `[1]` would give
+`sSup … = 1`, so we hard-code the paper convention. -/
 noncomputable def HChain (n : ℕ) : ℕ :=
-  sSup {u | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u}
+  if n = 1 then 0
+  else sSup {u | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u}
 
 /-! ### Iterated logarithms and the tower -/
 
@@ -196,7 +193,7 @@ lemma hChain_le_HChain (n : ℕ) : hChain n ≤ HChain n := by
       have : B + 1 ≤ B := hB ⟨ps, prime_to_divisor hps, hlen⟩
       omega
     rw [hChain, HChain, Nat.sSup_of_not_bddAbove hPrimeUnbdd,
-      Nat.sSup_of_not_bddAbove hDivUnbdd]
+      if_neg (by decide : (0 : ℕ) ≠ 1), Nat.sSup_of_not_bddAbove hDivUnbdd]
   · have hlen_le : ∀ {ds : List ℕ}, IsDivisorChain n ds → ds.length ≤ n := by
       intro ds hds
       rcases hds with ⟨hdiv, hpair, _hmod⟩
@@ -215,11 +212,39 @@ lemma hChain_le_HChain (n : ℕ) : hChain n ≤ HChain n := by
       intro u hu
       rcases hu with ⟨ds, hds, rfl⟩
       exact hlen_le hds
-    dsimp [hChain, HChain]
-    refine csSup_le_csSup' hDivBdd ?_
-    intro ℓ hℓ
-    rcases hℓ with ⟨ps, hps, rfl⟩
-    exact ⟨ps, prime_to_divisor hps, rfl⟩
+    -- Case-split on n = 1.  For n = 1, both hChain 1 and HChain 1 are 0:
+    -- hChain 1 = 0 because no primes divide 1; HChain 1 = 0 by paper convention.
+    by_cases hn1 : n = 1
+    · subst hn1
+      have hPrime1_empty : ∀ {ps : List ℕ}, IsPrimeChain 1 ps → ps = [] := by
+        intro ps hps
+        rcases hps with ⟨hprime, _, _⟩
+        cases ps with
+        | nil => rfl
+        | cons p _ =>
+          exfalso
+          have hp_dvd_1 := (hprime p (by simp)).2
+          have hp_eq_1 : p = 1 := Nat.eq_one_of_dvd_one hp_dvd_1
+          have hp_prime := (hprime p (by simp)).1
+          exact hp_prime.one_lt.ne' hp_eq_1
+      have hSetEq : {ℓ : ℕ | ∃ ps, IsPrimeChain 1 ps ∧ ps.length = ℓ} = {0} := by
+        ext ℓ
+        simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
+        constructor
+        · rintro ⟨ps, hps, rfl⟩
+          rw [hPrime1_empty hps]; rfl
+        · rintro rfl
+          refine ⟨[], ⟨fun _ => by simp, by simp, ?_⟩, rfl⟩
+          intro i _; exact i.elim0
+      show hChain 1 ≤ HChain 1
+      rw [hChain, HChain, hSetEq, csSup_singleton, if_pos rfl]
+    · -- n ≥ 2: HChain unfolds to sSup directly via `if_neg hn1`.
+      show hChain n ≤ HChain n
+      rw [hChain, HChain, if_neg hn1]
+      refine csSup_le_csSup' hDivBdd ?_
+      intro ℓ hℓ
+      rcases hℓ with ⟨ps, hps, rfl⟩
+      exact ⟨ps, prime_to_divisor hps, rfl⟩
 
 /-! ### `almostAll` helpers (moved here from Main.lean to break import cycles) -/
 

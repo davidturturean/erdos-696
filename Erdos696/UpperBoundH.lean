@@ -645,9 +645,12 @@ lemma IsDivisorChain.length_le_self {n : ℕ} (hn : n ≠ 0) {ds : List ℕ}
 /-- The extremal divisor-chain length is bounded by `n` for positive `n`. -/
 lemma HChain_le_self {n : ℕ} (hn : n ≠ 0) : HChain n ≤ n := by
   classical
+  by_cases hn1 : n = 1
+  · subst hn1; simp [HChain]
   have hne : ({u | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u} : Set ℕ).Nonempty :=
     ⟨0, ⟨[], by simp [IsDivisorChain]⟩⟩
-  dsimp [HChain]
+  show HChain n ≤ n
+  rw [HChain, if_neg hn1]
   exact csSup_le hne (by
     intro u hu
     rcases hu with ⟨ds, hds, rfl⟩
@@ -838,9 +841,12 @@ private lemma HChain_le_rank_add_of_no_bad {n T : ℕ}
     (hnoT : ∀ d e : ℕ, T ≤ d → d ∣ n → e ∣ n → ¬ IsHBadPair d e) :
     HChain n ≤ T + Urank n + 1 := by
   classical
+  by_cases hn1 : n = 1
+  · subst hn1; simp [HChain]
   have hne : ({u | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u} : Set ℕ).Nonempty :=
     ⟨0, ⟨[], by simp [IsDivisorChain]⟩⟩
-  dsimp [HChain]
+  show HChain n ≤ T + Urank n + 1
+  rw [HChain, if_neg hn1]
   exact csSup_le hne (by
     intro u hu
     rcases hu with ⟨ds, hds, rfl⟩

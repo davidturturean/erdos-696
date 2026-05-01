@@ -168,7 +168,7 @@ private lemma divisorChain_length_le_self {n : ℕ} (hn : n ≠ 0) {ds : List �
   exact (Finset.card_le_card hsub).trans (by simp)
 
 private lemma HChain_ge_of_hasDivisorChainLengthAtLeast {R n : ℕ} (hn : n ≠ 0)
-    (hR : HasDivisorChainLengthAtLeast R n) : R ≤ HChain n := by
+    (hn1 : n ≠ 1) (hR : HasDivisorChainLengthAtLeast R n) : R ≤ HChain n := by
   rcases hR with ⟨ds, hds, hRle⟩
   have hbound : BddAbove {u : ℕ | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u} := by
     refine ⟨n, ?_⟩
@@ -178,7 +178,8 @@ private lemma HChain_ge_of_hasDivisorChainLengthAtLeast {R n : ℕ} (hn : n ≠ 
   have hmem : ds.length ∈ {u : ℕ | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u} :=
     ⟨ds, hds, rfl⟩
   have hle : ds.length ≤ HChain n := by
-    dsimp [HChain]
+    show ds.length ≤ HChain n
+    rw [HChain, if_neg hn1]
     exact le_csSup hbound hmem
   exact hRle.trans hle
 
@@ -191,7 +192,23 @@ private lemma lower_bound_of_good_divisor_chain {ε : ℝ} {n : ℕ}
     (hgood : GoodLowerDivisorChain ε n) :
     (HChain n : ℝ) ≥ (1 - ε) * (logStar (n : ℝ) : ℝ) := by
   rcases hgood with ⟨R, hn, hchain, hR⟩
-  have hnat : R ≤ HChain n := HChain_ge_of_hasDivisorChainLengthAtLeast hn hchain
+  by_cases hn1 : n = 1
+  · -- n = 1: logStar 1 = 0, both sides are 0.
+    subst hn1
+    have h_logStar_zero : logStar ((1 : ℕ) : ℝ) = 0 := by
+      classical
+      have h_one_le_exp : (1 : ℝ) ≤ Real.exp 1 := by
+        have := Real.exp_one_gt_d9; linarith
+      have hex : ∃ k : ℕ, iteratedLog k ((1 : ℕ) : ℝ) ≤ Real.exp 1 :=
+        ⟨0, by simp [iteratedLog]⟩
+      unfold logStar
+      rw [dif_pos hex, Nat.find_eq_zero]
+      simpa [iteratedLog] using h_one_le_exp
+    have hgoal : (1 - ε) * ((logStar ((1 : ℕ) : ℝ) : ℝ)) = 0 := by
+      rw [h_logStar_zero]; push_cast; ring
+    have hHC_nn : (0 : ℝ) ≤ ((HChain 1 : ℕ) : ℝ) := by exact_mod_cast Nat.zero_le _
+    linarith [hgoal, hHC_nn]
+  have hnat : R ≤ HChain n := HChain_ge_of_hasDivisorChainLengthAtLeast hn hn1 hchain
   have hreal : (R : ℝ) ≤ (HChain n : ℝ) := by exact_mod_cast hnat
   exact hR.trans hreal
 
