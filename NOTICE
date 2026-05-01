@@ -1,0 +1,45 @@
+Erdős Problem #696 — paper + Lean 4 formalization
+Copyright 2026 David Turturean
+
+Licensed under the Apache License, Version 2.0 (the "License");
+see the accompanying LICENSE file or http://www.apache.org/licenses/LICENSE-2.0
+for the full license text.
+
+------------------------------------------------------------
+Attribution
+------------------------------------------------------------
+
+This product includes:
+
+  * Mathematical preprint by David Turturean (April 2026),
+    with AI-assisted writeup.
+
+  * A Lean 4 / Mathlib v4.28.0 formalization (May 2026),
+    produced by Claude Opus 4.7 (Max Thinking) running inside
+    Claude Code, mirroring the preprint section by section.
+
+For full disclosure of the AI assistance involved, see:
+
+  * paper/erdos_696_paper.tex, Section 1
+    ("Acknowledgement of AI assistance")
+  * README.md, "How it was made"
+
+------------------------------------------------------------
+Cited classical analytic number theory inputs (axioms in the
+Lean formalization)
+------------------------------------------------------------
+
+  * Siegel–Walfisz theorem
+    H. Davenport, Multiplicative Number Theory, GTM 74,
+    2nd edition revised by H. L. Montgomery, Springer-Verlag,
+    Berlin Heidelberg, 1980, Chapter 22, equation (4).
+
+  * Brun–Titchmarsh inequality
+    H. Iwaniec and E. Kowalski, Analytic Number Theory,
+    AMS Colloquium Publications Vol. 53, American Mathematical
+    Society, Providence, RI, 2004, Theorem 6.6.
+
+  * Mertens' second theorem
+    F. Mertens, "Ein Beitrag zur analytischen Zahlentheorie,"
+    Journal für die reine und angewandte Mathematik 78 (1874),
+    46–62.
