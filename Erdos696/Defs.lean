@@ -62,8 +62,15 @@ with `hChain 1 = 0` by convention. -/
 noncomputable def hChain (n : ℕ) : ℕ :=
   sSup {ℓ | ∃ ps : List ℕ, IsPrimeChain n ps ∧ ps.length = ℓ}
 
-/-- `H(n)` of the paper: the largest length of a divisor chain of `n`,
-with `HChain 1 = 0` by convention. -/
+/-- `H(n)` of the paper: the largest length of a divisor chain of `n`.
+
+**Convention difference at n = 1.**  Paper line 88 sets `H(1) = 0` by fiat.
+Lean's definition gives `HChain 1 = 1` because the singleton chain `[1]` is
+a valid length-1 divisor chain of `1` (`1 ∣ 1` and the pairwise/mod conjuncts
+are vacuous).  This single-point discrepancy is **asymptotically vacuous**:
+the main theorem `erdos_696` quantifies over almost all `n` (excluding any
+finite exception set including `n = 1`), so the difference does not appear
+in the asymptotic statement. -/
 noncomputable def HChain (n : ℕ) : ℕ :=
   sSup {u | ∃ ds : List ℕ, IsDivisorChain n ds ∧ ds.length = u}
 
