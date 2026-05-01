@@ -79,7 +79,7 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 
 | Axiom | Paper § | Reference |
 |---|---|---|
-| `siegel_walfisz` | Lemma 2.1 | Davenport, *Multiplicative Number Theory*, 2nd ed. (rev. Montgomery), GTM 74, **§22 eq. (4)** |
+| `siegel_walfisz` | Lemma 2.1 | Davenport, *Multiplicative Number Theory*, GTM 74, **Ch. 22 eq. (4)** (verified vs. 2nd ed. rev. Montgomery; identical in 3rd ed.) |
 | `brun_titchmarsh` | Lemma 2.2 | Iwaniec-Kowalski, *Analytic Number Theory*, AMS Colloquium Publ. 53, **Theorem 6.6** |
 | `mertens` | Lemma 2.3 | Hardy-Wright, *Introduction to the Theory of Numbers*, 6th ed., **Theorem 427** (also Tenenbaum, *Introduction to Analytic and Probabilistic NT*, Thm. I.1.11) |
 

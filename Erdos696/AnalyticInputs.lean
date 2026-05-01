@@ -40,7 +40,9 @@ noncomputable def li (t : ℝ) : ℝ :=
 
 /--
 **Siegel–Walfisz theorem** (Lemma 2.1 in the paper, classical reference
-Davenport, *Multiplicative Number Theory*, 2nd ed., GTM 74, §22).
+Davenport, *Multiplicative Number Theory* (GTM 74), Ch. 22 — verified
+against 2nd edition revised by Montgomery; the 3rd edition cited in the
+paper bibliography contains the identical statement).
 
 **Textbook statement (Davenport §22, eq. (4) — ψ form):**
 > Let `N` be any positive constant.  Then there exists a positive number
