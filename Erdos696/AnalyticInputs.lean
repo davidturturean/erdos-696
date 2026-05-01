@@ -40,13 +40,21 @@ noncomputable def li (t : ℝ) : ℝ :=
 
 /--
 **Siegel–Walfisz theorem** (Lemma 2.1 in the paper, classical reference
-Davenport, *Multiplicative Number Theory*, Ch. 22).
+Davenport, *Multiplicative Number Theory*, 2nd ed., GTM 74, §22).
 
-For every `A > 0` there exists `c = c(A) > 0` such that, uniformly for
-`q ≤ (log t)^A` and every reduced residue class `a (mod q)`,
-`π(t; q, a) = Li(t)/φ(q) + O(t · exp(-c√(log t)))`.
+**Textbook statement (Davenport §22, eq. (4) — ψ form):**
+> Let `N` be any positive constant.  Then there exists a positive number
+> `C₃(N)`, depending only on `N`, such that if `q ≤ (log x)^N` then
+>     ψ(x; q, a) = x/φ(q) + O{x exp[−C₃(N)(log x)^{1/2}]}
+> uniformly in `q`, for every `(a, q) = 1`.
 
-This statement is unconditional. -/
+The π-form (this axiom) follows by partial summation (Davenport p.133):
+the main term `x/φ(q)` becomes `Li(x)/φ(q)` and the error term keeps the
+same exp(−c √log) shape.  The exp(−c √log x) bound is the strongest
+unconditional rate currently known, due to a Siegel-type analysis of
+exceptional zeros of Dirichlet `L`-functions.
+
+This is unconditional (does not assume GRH). -/
 axiom siegel_walfisz :
     ∀ A : ℝ, 0 < A →
     ∃ c : ℝ, 0 < c ∧
@@ -58,12 +66,20 @@ axiom siegel_walfisz :
                 C * t * Real.exp (-c * Real.sqrt (Real.log t))
 
 /--
-**Brun–Titchmarsh inequality** (Lemma 2.2 in the paper; reference
-Iwaniec–Kowalski, *Analytic Number Theory*, Thm. 6.6).
+**Brun–Titchmarsh inequality** (Lemma 2.2 in the paper, classical
+reference Iwaniec–Kowalski, *Analytic Number Theory*, AMS Colloquium
+Publications Vol. 53, 2004, Theorem 6.6).
 
-There is an absolute constant `C_BT > 0` such that, for all `q ≥ 1`, all
-`a` coprime to `q`, and all `t ≥ 2q`,
-`π(t; q, a) ≤ C_BT · t / (φ(q) · log(t/q))`. -/
+**Textbook statement (Iwaniec–Kowalski Thm. 6.6 — interval form):**
+> For `(a, q) = 1` and `1 ≤ q < y`,
+>     π(x + y; q, a) − π(x; q, a) < (2y) / (φ(q) log(y/q)) + O(y / (q log²(y/q)))
+> where the implied constant is absolute.
+
+This axiom records the consequence with `x = 0` and `y = t`:
+`π(t; q, a) ≤ C_BT · t / (φ(q) log(t/q))` (the additive `O(...)` term
+is absorbed into the constant `C_BT` for `t ≥ 2q`, where `log(t/q) ≥ log 2`).
+
+Proved unconditionally via Selberg's `Λ²`-sieve (IK §6.5–6.8). -/
 axiom brun_titchmarsh :
     ∃ CBT : ℝ, 0 < CBT ∧
       ∀ q : ℕ, 1 ≤ q →
@@ -73,11 +89,25 @@ axiom brun_titchmarsh :
               CBT * t / ((q.totient : ℝ) * Real.log (t / q))
 
 /--
-**Mertens' theorem with explicit error** (Lemma 2.3 in the paper;
-Hardy–Wright, *An Introduction to the Theory of Numbers*, Thm. 427).
+**Mertens' theorem with explicit error** (Lemma 2.3 in the paper,
+classical reference Hardy–Wright, *An Introduction to the Theory of
+Numbers*, 6th ed. (revised by Heath-Brown and Silverman), OUP 2008,
+Theorem 427; also Tenenbaum, *Introduction to Analytic and Probabilistic
+Number Theory*, 3rd ed., Ch. I.1, Theorem 11).
 
-There is an absolute constant `M ∈ ℝ` such that, for all `t ≥ 2`,
-`∑_{p ≤ t, p prime} 1/p = log log t + M + O(1/log t)`. -/
+**Textbook statement:**
+> There is an absolute constant `M ∈ ℝ` (Mertens' constant,
+> `M ≈ 0.2614972…`) such that, for all `t ≥ 2`,
+>     ∑_{p ≤ t, p prime} 1/p = log log t + M + O(1/log t).
+
+The leading term `log log t` matches the heuristic 1/p prime density and
+the explicit `O(1/log t)` error rate is a consequence of Mertens' first
+theorem `∑_{p ≤ t} (log p)/p = log t + O(1)` plus Abel partial summation.
+Proof outline: combine `chebyshev_theta` (Lemma 2.4, formally proved
+below) with partial summation; the residual constant `M` is computable
+to arbitrary precision.
+
+Proven unconditionally; predates the Prime Number Theorem. -/
 axiom mertens :
     ∃ M : ℝ, ∃ C : ℝ, 0 < C ∧
       ∀ t : ℝ, 2 ≤ t →

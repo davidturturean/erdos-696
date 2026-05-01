@@ -73,22 +73,63 @@ A pre-built PDF is committed at `paper/erdos_696_paper.pdf`.
 
 ## Axioms used
 
-The formalization is `0 sorries` and depends on **3 classical analytic NT axioms** (Mathlib v4.28.0 gaps), all standard textbook results:
+The formalization is `0 sorries` and depends on **3 classical analytic NT axioms** (Mathlib v4.28.0 gaps).  All three are standard textbook results admitted without proof here only because Mathlib does not yet package them.
 
-| Axiom | Paper Lemma | Reference |
+### Axiom audit (verbatim against published references)
+
+| Axiom | Paper § | Reference |
 |---|---|---|
-| `siegel_walfisz` | Lemma 2.1 | Davenport, *Multiplicative Number Theory*, Ch. 22 |
-| `brun_titchmarsh` | Lemma 2.2 | Iwaniec-Kowalski, *Analytic Number Theory*, Thm. 6.6 |
-| `mertens` | Lemma 2.3 | Hardy-Wright, *Introduction to the Theory of Numbers*, Thm. 427 |
+| `siegel_walfisz` | Lemma 2.1 | Davenport, *Multiplicative Number Theory*, 2nd ed. (rev. Montgomery), GTM 74, **§22 eq. (4)** |
+| `brun_titchmarsh` | Lemma 2.2 | Iwaniec-Kowalski, *Analytic Number Theory*, AMS Colloquium Publ. 53, **Theorem 6.6** |
+| `mertens` | Lemma 2.3 | Hardy-Wright, *Introduction to the Theory of Numbers*, 6th ed., **Theorem 427** (also Tenenbaum, *Introduction to Analytic and Probabilistic NT*, Thm. I.1.11) |
 
-Two additional cited inputs are formally proved here:
-- `chebyshev_theta` (Lemma 2.4) — derived from `Mathlib.NumberTheory.Chebyshev`.
-- `crt_transfer` (Lemma 2.7) — proved by elementary CRT counting.
+#### 1. `siegel_walfisz` — Davenport §22 eq. (4)
 
-Verify the dependency chain:
+> *Let `N` be any positive constant.  Then there exists a positive number `C₃(N)`, depending only on `N`, such that if `q ≤ (log x)^N` then*
+> $$\psi(x; q, a) \;=\; \frac{x}{\varphi(q)} \;+\; O\!\bigl\{x \exp\bigl[-C_3(N)(\log x)^{1/2}\bigr]\bigr\}$$
+> *uniformly in `q`, for every `(a, q) = 1`.*
+
+**Lean form** (π-version, by partial summation as in Davenport p.133):
+```lean
+∀ A > 0, ∃ c > 0, ∃ C > 0, ∀ t ≥ 2, ∀ q ≥ 1, q ≤ (log t)^A,
+  ∀ a coprime to q,
+    |π(t; q, a) - Li(t)/φ(q)| ≤ C · t · exp(-c · √(log t))
+```
+
+#### 2. `brun_titchmarsh` — Iwaniec-Kowalski Theorem 6.6
+
+> *For `(a, q) = 1` and `1 ≤ q < y`,*
+> $$\pi(x + y; q, a) - \pi(x; q, a) \;<\; \frac{2y}{\varphi(q) \log(y/q)} + O\!\Bigl(\frac{y}{q \log^2(y/q)}\Bigr)$$
+> *where the implied constant is absolute.*
+
+**Lean form** (specialization to `x = 0`, error absorbed into one constant):
+```lean
+∃ C_BT > 0, ∀ q ≥ 1, ∀ a coprime to q, ∀ t ≥ 2q,
+  π(t; q, a) ≤ C_BT · t / (φ(q) · log(t/q))
+```
+
+#### 3. `mertens` — Hardy-Wright Theorem 427
+
+> *There is an absolute constant `M ∈ ℝ` (Mertens' constant, `M ≈ 0.2614972…`) such that, for all `t ≥ 2`,*
+> $$\sum_{p \le t,\, p\text{ prime}} \frac{1}{p} \;=\; \log\log t + M + O\!\bigl(1/\log t\bigr).$$
+
+**Lean form**:
+```lean
+∃ M : ℝ, ∃ C > 0, ∀ t ≥ 2,
+  |∑_{p ≤ ⌊t⌋, p prime} 1/p - log log t - M| ≤ C / log t
+```
+
+### Two additional cited inputs are *formally proved* here (not axioms)
+
+- **`chebyshev_theta`** (Lemma 2.4) — derived from `Mathlib.NumberTheory.Chebyshev.theta_le_log4_mul_x` (`Cθ := log 4`).
+- **`crt_transfer`** (Lemma 2.7) — proved by elementary CRT counting (~150 LOC).
+
+### Verifying the dependency chain
+
 ```bash
 lean --print-axioms Erdos696.Main.erdos_696
 ```
+should report exactly the three axioms above (plus Lean's built-in `Classical.choice`, `propext`, `Quot.sound`).
 
 ## How it was made
 
