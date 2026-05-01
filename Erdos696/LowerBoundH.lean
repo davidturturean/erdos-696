@@ -3331,7 +3331,6 @@ private lemma h_chain_per_greedy_stage_failure_bound
     --
     -- **Step 6**: Bound LHS via h_strong.  count{CoreBad} ≤ y_target^{-c} · M / d.
     -- The CompositeSuccessorBadSet bound transfers to Finset.range M with adjustment for n=0 vs n=M.
-    -- For now sub-sorry the bridge.
     -- **Bridge: Finset.range M card ↔ Nat.card BadSet (via boundary equivalence).**
     -- card{Finset.range M filter CoreBad} = card{[0, M-1] : CoreBad}.
     -- Nat.card BadSet = card{[1, M] : CoreBad ∧ 0 < n} = card{[1, M] : CoreBad}.
@@ -3600,7 +3599,7 @@ private lemma h_chain_per_greedy_stage_failure_bound
       set N : ℕ := ⌊Real.exp (y_target ^ A)⌋₊ with hN_def
       have hN_le_P : N ≤ P := h_floor_le_P
       -- 2 · N ≤ outer_P: from outer_P ≥ exp(exp((A-1)y_target^A)) >> 2 · exp(y_target^A) ≥ 2 N.
-      -- For y_target large, this holds; sub-sorry the ≤ inequality (technical exp/floor reasoning).
+      -- Now closed via hP_at_target (the strengthened P bound at exponent A).
       have h2N_le_P : 2 * N ≤ P := by
         -- 2N = 2·⌊exp(y_target^A)⌋₊ ≤ 2·exp(y_target^A) ≤ outer_P (via hP_at_target).
         have h2N_R_le : (2 * N : ℝ) ≤ 2 * Real.exp (y_target ^ A) := by
@@ -4354,13 +4353,11 @@ private lemma H_chain_geometric_sum_bound
 
 Same conclusion as `HChainEvent_pmodel_bound` but proven via the greedy-event pipeline:
 1. Soundness contrapositive: `¬HCEStrict_R ⟹ ¬hGreedySucc_R`.
-2. Greedy telescope (`hGreedySucc_failure_telescope_le`, proven).
-3. Per-stage greedy bound (`h_chain_per_greedy_stage_failure_bound`, sub-sorry'd).
-4. Geometric sum + tower decay (proven).
+2. Greedy telescope (`hGreedySucc_failure_telescope_le`).
+3. Per-stage greedy bound (`h_chain_per_greedy_stage_failure_bound`).
+4. Geometric sum + tower decay.
 
-This is the paper-faithful refactor.  Once `h_chain_per_greedy_stage_failure_bound`
-closes, this lemma closes, and the old `HChainEvent_pmodel_bound` (which uses an
-unprovable per-HCEStrict bound) can be deleted. -/
+This is the paper-faithful version (all three steps formally proven). -/
 private lemma HChainEvent_pmodel_bound_via_greedy
     {A : ℝ} (hA_eq : A = 20) {B : ℝ} (hAB : A + 10 ≤ B)
     (Lscale : ℕ) (_hScale : HScaleWitness A Lscale)
