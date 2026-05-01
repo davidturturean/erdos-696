@@ -8,13 +8,15 @@ A complete proof and Lean 4 formalization of [Erdős Problem #696](https://www.e
 
 ## Result
 
-For every $\varepsilon > 0$, almost all $n$ satisfy
-$$
-h(n) = \left(\tfrac{1}{2} + o(1)\right) \log_* n,\qquad
-H(n) = \left(1 + o(1)\right) \log_* n,\qquad
-\frac{H(n)}{h(n)} \longrightarrow 2.
-$$
-In particular, Erdős's conjectured $H(n)/h(n) \to \infty$ is **false** on a density-one set.
+For every `ε > 0`, almost all `n` satisfy
+
+$$h(n) = \left(\frac{1}{2} + o(1)\right) \log_* n$$
+
+$$H(n) = (1 + o(1)) \log_* n$$
+
+$$\frac{H(n)}{h(n)} \to 2$$
+
+In particular, Erdős's conjectured `H(n)/h(n) → ∞` is **false** on a density-one set.
 
 Here:
 - $h(n)$ = largest $\ell$ such that primes $p_1 < \cdots < p_\ell$ all divide $n$ with $p_{i+1} \equiv 1 \pmod{p_i}$.
