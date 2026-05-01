@@ -40,7 +40,7 @@ Sketch: equivalent to `exp(A T_m / B) ≤ exp T_m / B`, i.e.
 `T_m (1 - A/B) ≥ log B`.  Holds since `1 - A/B = 10/B > 0` and
 `T_m → ∞`.
 
-Deferred (real-analysis bookkeeping on the tower).
+Real-analysis bookkeeping on the tower.
 
 Refactored 2026-04-28: af-010 found counterexample A=-10,B=0 satisfying
 the prior `A+10≤B` hypothesis but breaking conclusion. Added `0 < A`
@@ -5524,8 +5524,8 @@ Sketch: at each stage `j`, apply `composite_successor` with `d := d_j`,
 in `(exp y_j, exp(y_j^{A-1})]`.  The events at different stages are
 independent (disjoint windows), so failure probabilities add to `o(1)`.
 
-Deferred — uses `composite_successor` independently in each window,
-plus `crt_transfer` to lift product-model density to integer density.
+Uses `composite_successor` independently in each window, plus
+`crt_transfer` to lift product-model density to integer density.
 
 Refactored 2026-04-28 to carry actual density content (was `True` stub).
 The statement now directly asserts the integer density result needed

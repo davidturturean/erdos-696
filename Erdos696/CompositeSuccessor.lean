@@ -8381,14 +8381,15 @@ This combines:
   failure event is `M`-periodic for `M = primorial(⌊exp(y^A)⌋)`, and
   paper §7.4 lines 1980-2007 establish `M = x^{o(1)} = o(x)`.
 
-Deferred: the single analytic obligation needed by both `composite_successor`
-and `composite_successor_uniform`. The 7-step paper §6.2 argument requires a
-product-model probability framework that is not currently in Mathlib; this
-lemma records the integer-density consequence directly.
+The single analytic obligation needed by both `composite_successor`
+and `composite_successor_uniform` is the 7-step paper §6.2 argument; the
+product-model probability framework is built up in this file (Steps 1-6
+proved here, Step 7 assembled in `step7_combine_and_crt_transfer`).
 
-**Soundness of statement:** purely a true theorem of analytic number theory
-(paper Theorem 6.2 + paper Lemma 2.7). No new axioms; depends only on the
-5 named axioms (siegel_walfisz, brun_titchmarsh, mertens, chebyshev_theta,
+**Soundness of statement:** a theorem of analytic number theory (paper
+Theorem 6.2 + paper Lemma 2.7). Depends only on the 3 cited NT axioms
+(siegel_walfisz, brun_titchmarsh, mertens) plus the proved theorems
+chebyshev_theta and
 crt_transfer) plus subset_product_main (already proved in `SubsetProduct.lean`). -/
 private lemma composite_successor_pmodel_density :
     ∃ A : ℝ, 10 < A ∧
@@ -8468,7 +8469,7 @@ the prime-model probability that there is a squarefree product `e` of
 selected primes in `(exp y, exp(y^{A-1})]` satisfying
 `e ≡ 1 (mod d)`, `e > d`, `e ≤ exp(y^A)`, is at least `1 - y^{-c}`.
 
-Deferred (Steps 1–7 of §6.2).
+Steps 1-7 of §6.2 (proved in this file).
 
 Refactored 2026-04-28 to integer-density form (was `True` stub). The
 content carried by the lemma is: for almost-all n divisible by d (in

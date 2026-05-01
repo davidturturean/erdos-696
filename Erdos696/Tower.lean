@@ -142,11 +142,9 @@ noncomputable def G (t : ℝ) : ℝ := (Real.log t) ^ 2
 
 /-- Lemma 3.3 of the paper: `G(U_m) ≤ U_{m-1}` for `m ≥ 5`.
 
-Sketch: `G(U_m) = (3 T_{m-1})^2 = 9 T_{m-1}^2`.  We need
+Proof: `G(U_m) = (3 T_{m-1})^2 = 9 T_{m-1}^2`.  We need
 `9 T_{m-1}^2 ≤ T_{m-1}^3 = U_{m-1}`, i.e. `T_{m-1} ≥ 9`, which holds
-already for `m ≥ 2`.
-
-Deferred. -/
+already for `m ≥ 2`. -/
 lemma U_tower_H (m : ℕ) (hm : 5 ≤ m) :
     G (Um m) ≤ Um (m - 1) := by
   unfold G
@@ -190,7 +188,7 @@ Sketch: `log U_m = 3 T_{m-1}`, `log log U_m = T_{m-2} + log 3`,
 `≤ 2 C_f (log T_{m-2})^2 / T_{m-2}^2 → 0`.  Choose `m₀*` so the ratio
 is `≤ 1`.
 
-Deferred (multi-step real-analysis estimate). -/
+Multi-step real-analysis estimate. -/
 lemma U_tower_h (Cf : ℝ) (hCf : 0 < Cf) :
     ∃ m₀ : ℕ, 6 ≤ m₀ ∧
       ∀ m : ℕ, m₀ ≤ m → fH Cf (Um m) ≤ Um (m - 2) := by
@@ -235,7 +233,7 @@ satisfies `e^{p / (log p)^2} ≥ log log q` for some `q`, then
 This is the *algebraic-inequality solution* underlying the descent
 `p_i ≤ f(p_{i+1})` in (4.15) of the paper.
 
-Deferred (algebraic inequality). -/
+Algebraic inequality (fixed-point inversion of `e^a ≤ a^2 b`). -/
 lemma p_bound_from_Q (p q : ℕ) (hp : (100 : ℝ) ≤ (p : ℝ)) (hq : (100 : ℝ) ≤ (q : ℝ))
     (_hineq : (p : ℝ) / ((Real.log p) ^ 2) ≤ Real.log (Real.log q)) :
     ∃ Cf : ℝ, 0 < Cf ∧

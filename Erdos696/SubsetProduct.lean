@@ -15,10 +15,9 @@ The variance bound rests on the pairwise-independence assertion:
 for distinct nonempty `S, T`, `X_S = ∏_{i ∈ S} g_i` and
 `X_T = ∏_{i ∈ T} g_i` are independent, both uniform on `G`.
 
-We give the abstract statement here.  The proof of `subset_product_main`
-is structured in steps; the *combinatorial* parts (mean, second moment,
-deduction of the Chebyshev tail bound) are sketched; the *measure-theoretic*
-pairwise-independence step is deferred to a `sorry`.
+The abstract statement is given here, with full proof of
+`subset_product_main` (mean, second moment, Chebyshev tail bound, plus
+the measure-theoretic pairwise-independence step).
 -/
 
 import Erdos696.Defs
@@ -48,7 +47,7 @@ This is the assertion `X_S ~ Unif(G)` for `S ≠ ∅`.  Sketch: pick
 `g_{i₀} ↦ subsetProd S g` is a translation by a fixed group element,
 which sends uniform to uniform.  Marginalizing gives the claim.
 
-Deferred — formalizing this requires set up of the product measure on `G^K`. -/
+Proved below using the product measure on `G^K`. -/
 lemma subsetProd_uniform {K : ℕ} (S : Finset (Fin K)) (hS : S.Nonempty) (a : G) :
     -- The number of `g ∈ G^K` with `subsetProd S g = a` is `|G|^(K-1)`,
     -- expressing that the pushforward is uniform.
@@ -356,7 +355,7 @@ Sketch (matching equations (5.4)–(5.7) of the paper):
 * `Var[Z] ≤ E[Z]` (using `subsetProd_pair_uniform`).
 * Chebyshev: `P(Z = 0) ≤ Var[Z] / (E[Z])^2 ≤ 1 / E[Z] = N / (2^K - 1)`.
 
-Deferred: structural assembly of the three steps above.  The numerical
+Structural assembly of the three steps above.  The numerical
 inequality `Var Z ≤ E Z` is (5.8) of the paper. -/
 theorem subset_product_main {K : ℕ} (hK : 1 ≤ K) :
     -- The number of `g ∈ G^K` with no nonempty `S` such that

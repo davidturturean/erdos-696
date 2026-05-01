@@ -298,7 +298,7 @@ The number of integers `n ≤ x` such that some `H`-bad pair `(d, e)` with
 Sketch: the inner sum `∑_{d < e < exp√d, e ≡ 1 mod d} 1/e ≤ d^{-1/2}`,
 giving `∑_{d ≥ Y} x/d · d^{-1/2} ≪ x · Y^{-1/2}`.
 
-Deferred — elementary but multi-step. -/
+Elementary but multi-step. -/
 lemma bad_pair_density_H :
     ∃ C : ℝ, 0 < C ∧
       ∀ x : ℝ, 1 ≤ x →
@@ -690,9 +690,8 @@ If `d_i ≥ Y` (for some `Y` chosen later) and the pair `(d_i, d_{i+1})` is
 *not* `H`-bad, then `Urank d_i ≤ Urank d_{i+1} - 1`, provided
 `Urank d_{i+1} ≥ 6`.
 
-Deferred: combines `U_tower_H` from `Tower.lean` with the definition of
-`Urank` and the inequality `d_i ≤ G(d_{i+1})` from the not-bad
-condition. -/
+Combines `U_tower_H` from `Tower.lean` with the definition of `Urank`
+and the inequality `d_i ≤ G(d_{i+1})` from the not-bad condition. -/
 lemma tower_descent_H (di dnext : ℕ) (hdi : 100 ≤ di)
     (h_no_bad : ¬ IsHBadPair di dnext)
     (h_chain : di < dnext ∧ dnext % di = 1)
@@ -903,7 +902,7 @@ as: for every `ε > 0`, the density of `n ≤ x` with
 Proof sketch (§3.3 of paper): combine `bad_pair_density_H` with
 `tower_descent_H` and the fact `ρ(d_u) ≤ L`.
 
-Deferred. -/
+-/
 theorem upper_bound_H :
     ∀ ε : ℝ, 0 < ε →
       almostAll (fun n => (HChain n : ℝ) ≤ (1 + ε) * (logStar n : ℝ)) := by

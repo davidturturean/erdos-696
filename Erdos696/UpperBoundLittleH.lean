@@ -235,7 +235,7 @@ with `p ≥ Y` divides `n` is `o(x)` as `Y → ∞`.
 Sketch: Brun–Titchmarsh gives `S(p) ≪ (log p)/p + 1/(log p)^2`; summing
 `S(p)/p` over `p ≥ Y` gives a convergent series.
 
-Deferred (uses `brun_titchmarsh`). -/
+Uses `brun_titchmarsh` (Lemma 2.2). -/
 lemma bad_prime_pair_density_h :
     ∀ ε : ℝ, 0 < ε →
       ∃ Y₀ : ℝ, 0 < Y₀ ∧
@@ -551,8 +551,8 @@ private lemma le_Um_sub_two_of_Qfn_le_Um {p m : ℕ} (hp : 100 ≤ p) (hm : 6 �
 If `(p_i, p_{i+1})` is not `h`-bad with `p_i ≥ Y ≥ 100` and
 `Urank p_{i+1} ≥ m₀*`, then `Urank p_i ≤ Urank p_{i+1} - 2`.
 
-Deferred: combines `U_tower_h` from `Tower.lean` with `p_bound_from_Q`
-and the definition of `Urank`.
+Combines `U_tower_h` from `Tower.lean` with `p_bound_from_Q` and the
+definition of `Urank`.
 
 Refactored 2026-04-28: af-017 found that hypothesis `m₀ ≤ Urank pnext`
 was insufficient (no link to U_tower_h's existential threshold). Now
@@ -757,9 +757,7 @@ private lemma eventually_good_upper_bound_h (ε : ℝ) (hε : 0 < ε) (T : ℕ)
 For all but `o(x)` integers `n ≤ x`, `h(n) ≤ (1/2 + o(1)) log_* x`.
 
 Encoded ε-style: for every `ε > 0`, the density of `n ≤ x` with
-`hChain n > (1/2 + ε) logStar x` tends to `0`.
-
-Deferred. -/
+`hChain n > (1/2 + ε) logStar x` tends to `0`. -/
 theorem upper_bound_h :
     ∀ ε : ℝ, 0 < ε →
       almostAll (fun n => (hChain n : ℝ) ≤ (1/2 + ε) * (logStar n : ℝ)) := by

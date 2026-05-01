@@ -3747,9 +3747,9 @@ In the independent prime model on primes up to `y_R`, the probability
 that there is no prime chain `p₁ < ⋯ < p_R` of the prescribed form is
 `o(1)` as `R = (1/2 - o(1)) log_* x → ∞`.
 
-Deferred — uses `prime_successor_mass` and a union bound over the `R`
-greedy steps, then `crt_transfer` to lift product-model density to
-integer density.
+Uses `prime_successor_mass` and a union bound over the `R` greedy
+steps, then `crt_transfer` to lift product-model density to integer
+density.
 
 Refactored 2026-04-28 to carry actual density content (was `True` stub).
 The statement now directly asserts the integer density result needed
