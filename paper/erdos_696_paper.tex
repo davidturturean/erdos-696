@@ -1,0 +1,2254 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathrsfs}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!40!black,citecolor=blue!40!black,urlcolor=blue!40!black]{hyperref}
+
+% Theorem environments
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% Notation
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\DeclareMathOperator{\li}{Li}
+\newcommand{\logstar}{\log_{\!*}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Normal orders of the Erd\H{o}s chain functions $h(n)$ and $H(n)$}
+
+\author{David Turturean\\
+  Massachusetts Institute of Technology\\
+  \texttt{davidct@mit.edu}}
+\date{April 26, 2026}
+
+\begin{document}
+
+\begin{abstract}
+For a positive integer $n$ let $h(n)$ be the largest $\ell$ such that there
+exist primes $p_1<\cdots<p_\ell$ all dividing $n$ with $p_{i+1}\equiv 1\pmod{p_i}$,
+and let $H(n)$ be the analogous quantity in which the $p_i$ are replaced by
+arbitrary divisors $d_i\mid n$. Erd\H{o}s asked
+\cite{ErdosProblems696} for estimates of $h(n)$ and $H(n)$, and whether
+$H(n)/h(n)\to\infty$ for almost all $n$; he believed that the normal order of
+$h(n)$ should be $\logstar n$.
+
+We prove that for all but $o(x)$ integers $n\le x$,
+\begin{equation*}
+h(n) = \Bigl(\tfrac12 + o(1)\Bigr)\logstar n,
+\qquad
+H(n) = \bigl(1+o(1)\bigr)\logstar n,
+\qquad
+\frac{H(n)}{h(n)} = 2 + o(1).
+\end{equation*}
+In particular $H(n)/h(n)\to\infty$ is \emph{false} on a density-one set, while
+Erd\H{o}s's belief about the order of magnitude of $h(n)$ is correct but with the
+explicit normal-order constant $1/2$.
+
+The upper bounds use a bad-pair density argument combined with an iterated-tower
+counting lemma. The lower bound for $h$ is a Siegel--Walfisz prime-successor
+construction transferred to integers via the Chinese remainder theorem. The
+lower bound for $H$ uses a new \emph{subset-product successor lemma}: if
+$g_1,\ldots,g_K$ are independent uniformly distributed elements of a finite
+abelian group $G$ of order $N$, then with probability at least
+$1-N/(2^K-1)$ some nonempty subproduct of the $g_i$ is equal to the identity.
+This is applied, after a near-uniform residue reduction using Siegel--Walfisz,
+inside Mertens-sized prime windows.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $n\ge 2$ be an integer. Erd\H{o}s introduced two natural ``chain'' functions
+attached to the multiplicative structure of $n$:
+\begin{itemize}[leftmargin=2em]
+\item[(i)] $h(n)$ is the largest integer $\ell$ such that there exist primes
+$p_1<p_2<\cdots<p_\ell$ all dividing $n$, with
+$p_{i+1}\equiv 1 \pmod{p_i}$ for $1\le i<\ell$;
+\item[(ii)] $H(n)$ is the largest integer $u$ such that there exist integers
+$d_1<d_2<\cdots<d_u$ all dividing $n$, with
+$d_{i+1}\equiv 1 \pmod{d_i}$ for $1\le i<u$.
+\end{itemize}
+We set $h(1)=H(1)=0$. For $n\ge 2$, $h(n)\ge 1$ because $n$ has a prime
+divisor, and $H(n)\ge 1$ because the one-term divisor chain $1\mid n$ is
+allowed.
+
+Problem 696 of the Erd\H{o}s Problems database \cite{ErdosProblems696} asks: estimate
+$h(n)$ and $H(n)$, and decide whether
+\begin{equation}\label{eq:erdos-conjecture}
+\frac{H(n)}{h(n)} \;\longrightarrow\; \infty
+\qquad\text{for almost all }n.
+\end{equation}
+According to the Erd\H{o}s Problems Database \cite{ErdosProblems696}, Erd\H{o}s
+further suggested that the \emph{normal order} of $h(n)$ should be the iterated
+logarithm $\logstar n$. (We were unable to locate this conjecture in
+Erd\H{o}s's published papers; the reader should treat the attribution as based
+on the database commentary.)
+
+The first nontrivial result on this problem (folklore; see van Doorn's comments
+in \cite{ErdosProblems696}) is that $h(n)\to\infty$ for almost all $n$. The
+present paper resolves the full problem by determining the normal orders of
+both $h$ and $H$ \emph{with explicit constants}.
+
+\subsection{Statement of the result}\label{ss:main-result}
+
+Define $T_0:=e$ and $T_{m+1}:=\exp(T_m)$ (these are formally introduced in
+Section~\ref{sec:notation}). We set
+\begin{equation}\label{eq:logstar-def}
+\logstar x \;:=\; \min\{m\ge 0 : x\le T_m\}.
+\end{equation}
+Equivalently, for $x\ge e$, this is
+\[
+\logstar x \;=\; \min\{m\ge 0 : \log^{(m)} x \le e\}.
+\]
+Thus $\logstar e=0$, $\logstar(e^e)=1$, etc. This convention differs from
+some other conventions by at most $1$, which is immaterial for the
+normal-order statements below.
+
+\begin{theorem}[Main theorem]\label{thm:main}
+For all but $o(x)$ integers $n\le x$,
+\begin{align}
+h(n) &= \Bigl(\tfrac12 + o(1)\Bigr)\logstar n, \label{eq:h-normal}\\
+H(n) &= \bigl(1 + o(1)\bigr)\logstar n, \label{eq:H-normal}\\
+\frac{H(n)}{h(n)} &= 2 + o(1). \label{eq:ratio}
+\end{align}
+In particular, the divergence \eqref{eq:erdos-conjecture} is false on a
+density-one set: $H(n)/h(n)$ is bounded above by $2+o(1)$ for almost all $n$.
+\end{theorem}
+
+It is striking that the constant $1/2$ for $h$ and the constant $1$ for $H$ both
+appear, and that the ratio is exactly $2$. The factor of $2$ has a transparent
+combinatorial explanation: a divisor-chain step $d_i\to d_{i+1}$ with
+$d_{i+1}\equiv 1\pmod{d_i}$ allows $d_{i+1}$ to be any product of selected primes
+hitting the trivial residue class mod $d_i$, whereas a prime-chain step $p_i\to
+p_{i+1}$ requires $p_{i+1}$ itself to be a prime in the residue class
+$1\pmod{p_i}$. For divisor chains the cost of one tower step is essentially
+$\log_2 d_i$ random primes; for prime chains the cost is essentially $d_i$ itself,
+and the bad-pair argument shows that two prime steps lower the iterated-tower
+rank by exactly two when one would have been lowered by one for a single
+divisor step.
+
+\subsection{Comparison with what was previously known}
+
+The qualitative claim $h(n)\to\infty$ a.a.\ was known. The quantitative
+statement $h(n)=\Theta(\logstar n)$ a.a.\ does not appear to have been published
+formally, although the proof we give in Section~\ref{sec:upper-h} for the upper
+bound is essentially classical, drawing on Brun--Titchmarsh and Mertens, and the
+$\Theta$-form lower bound follows the strategy implicit in
+Erd\H{o}s--Granville--Pomerance--Spiro \cite{EGPS1990} on iterates of the
+totient function.
+
+The closest published work in print is Ford, Konyagin and Luca \cite{FKL2010},
+who study the Pratt-tree depth
+\[
+  H_{\mathrm{Pr}}(p) \;:=\; \max\bigl\{k : \exists\,p_1\prec p_2\prec\cdots\prec p_k = p\bigr\},
+\]
+where each $p_i$ is prime and $a\prec b$ means $b\equiv 1\pmod a$. They prove
+$H_{\mathrm{Pr}}(p)\le (\log p)^{1-c'}$ for almost all primes $p\le x$ (some
+$c'>0$), and conjecture that the normal order is $e\log\log x$ via a branching
+random walk model. \emph{This is a different problem.} In our setup, the chain
+primes/divisors must all divide a specified integer $n$, which is a much more
+restrictive constraint than ``terminating at a fixed prime $p$''. The Pratt-tree
+depth grows like $\log\log p$; our $h(n)$ grows like $\frac12\logstar n$, much
+slower, because the supply of chain primes is restricted to the
+$\sim\log\log n$ prime divisors of $n$.
+
+The sharp normal orders \eqref{eq:h-normal}--\eqref{eq:H-normal} (with the
+matching constants $1/2$ and $1$) and the resulting refutation
+\eqref{eq:ratio} of \eqref{eq:erdos-conjecture}, are, to the best of the authors'
+knowledge, new. The upper bound for $h$ in
+\eqref{eq:h-normal} is a Brun--Titchmarsh refinement of the bad-pair argument; the
+matching lower bound is built greedily on the
+Siegel--Walfisz prime-counting function in arithmetic progressions. The
+lower bound \eqref{eq:H-normal} for $H$ rests on a probabilistic
+\emph{subset-product successor lemma}, stated and proved in
+Section~\ref{sec:subset-product}; this is the new technical input of the paper.
+
+\subsection{Acknowledgement of AI assistance}
+
+The arguments in this paper were assembled in collaboration with the Anthropic
+language model Claude Opus, working from a four-turn proof sketch produced by
+GPT-5.5-Pro (extended) on April 26, 2026. The authors verified all
+displayed inequalities and, in several places, used GPT-5.5-Pro (extended
+thinking) to fill in arguments that the original sketch had recorded only
+schematically. The result statement and overall proof structure are due to
+GPT-5.5-Pro; the iterative patches refining the writeup are also due to
+GPT-5.5-Pro (extended), assembled together with Claude Code.
+
+\subsection{Organization}
+
+Section~\ref{sec:notation} fixes notation and recalls the analytic inputs.
+Section~\ref{sec:upper-H} proves the upper bound $H(n)\le(1+o(1))\logstar n$ a.a.
+Section~\ref{sec:upper-h} proves the upper bound $h(n)\le(\tfrac12+o(1))\logstar n$ a.a.
+Section~\ref{sec:lower-h} proves the matching lower bound $h(n)\ge(\tfrac12-o(1))\logstar n$ a.a.\ via Siegel--Walfisz prime mass.
+Section~\ref{sec:subset-product} establishes the subset-product successor lemma.
+Section~\ref{sec:lower-H} proves $H(n)\ge(1-o(1))\logstar n$ a.a.\ using that lemma.
+Section~\ref{sec:proof-of-main} assembles the main theorem.
+Section~\ref{sec:remarks} contains concluding remarks.
+
+\section{Notation, conventions, and analytic inputs}\label{sec:notation}
+
+\subsection{Asymptotic conventions}
+
+Throughout the paper $x$ is a real parameter tending to $\infty$. We write $f
+\ll g$ or $f=O(g)$ to mean that $|f|\le C|g|$ for some absolute constant $C>0$
+and all sufficiently large $x$, and $f=o(g)$ if $f/g\to 0$ as $x\to\infty$. The
+implicit constants in any $O$ or $\ll$ may depend only on absolute parameters
+introduced \emph{before} the relevant inequality is asserted, and are explicitly
+labeled where needed.
+
+We say a property $\mathcal{P}=\mathcal{P}(n)$ holds \emph{for almost all $n$}
+(equivalently, ``a.a.''), or that $\mathcal{P}$ holds with \emph{density one},
+if
+\begin{equation}\label{eq:density-one}
+\#\bigl\{n\le x : \neg\mathcal{P}(n)\bigr\} \;=\; o(x)
+\qquad (x\to\infty).
+\end{equation}
+
+\subsection{Iterated logarithms and towers}
+
+All logarithms in the paper are natural logarithms. We use $\log^{(m)}x$ for
+the $m$-fold iterated logarithm, with $\log^{(0)}x=x$.
+
+We use the iterated logarithm $\logstar x$ as in \eqref{eq:logstar-def}.
+Equivalently, the tower of base-$e$ exponentials is defined by
+\begin{equation}\label{eq:tower}
+T_0 \;=\; e, \qquad T_{m+1} \;=\; \exp(T_m) \qquad (m\ge 0),
+\end{equation}
+and $\logstar x\le m$ if and only if $x\le T_m$. Note the basic identity
+\begin{equation}\label{eq:logT}
+\log T_m \;=\; T_{m-1} \qquad (m\ge 1).
+\end{equation}
+
+We will use the auxiliary scale
+\begin{equation}\label{eq:Um}
+U_m \;:=\; T_m^3 \qquad (m\ge 0),
+\end{equation}
+which behaves comparably to the tower $T_m$ but provides slack for
+constant-factor losses.
+
+We record several elementary computations that are used repeatedly:
+\begin{align}
+\log U_m &= 3 T_{m-1}, \label{eq:logU1}\\
+\log\log U_m &= \log\bigl(3T_{m-1}\bigr) = T_{m-2} + \log 3, \label{eq:logU2}\\
+\log\log\log U_m &= \log\bigl(T_{m-2}+\log 3\bigr) = T_{m-3} + O\bigl(T_{m-3}^{-1}\bigr).\label{eq:logU3}
+\end{align}
+Identities \eqref{eq:logU1}--\eqref{eq:logU3} are valid for $m\ge 4$, by repeated use of \eqref{eq:logT}.
+
+\subsection{Standard analytic inputs}
+
+We will appeal to four classical theorems of analytic number theory; we quote them in the precise form used.
+
+\begin{lemma}[Siegel--Walfisz, {\cite[Ch.~22]{Davenport}, \cite{SiegelWalfisz}}]\label{lem:SW}
+For every $A_0>0$ there exists $c_0=c_0(A_0)>0$ such that, uniformly for
+$t\ge 3$, $q\le(\log t)^{A_0}$, and $(a,q)=1$,
+\begin{equation}\label{eq:SW}
+\pi(t;q,a)
+\;=\;
+\frac{\li(t)}{\varphi(q)}
++
+O_{A_0}\!\left(t\exp\!\bigl(-c_0\sqrt{\log t}\bigr)\right).
+\end{equation}
+Consequently, if $3\le X\le Y$, $q\le(\log X)^{A_0}$, and $(a,q)=1$, then
+\begin{equation}\label{eq:SW-reciprocal}
+\sum_{\substack{X<p\le Y\\ p\equiv a\pmod q}}\frac1p
+\;=\;
+\frac1{\varphi(q)}\int_X^Y\frac{dt}{t\log t}
++
+O_{A_0}\!\left(\exp\!\bigl(-c_0\sqrt{\log X}\bigr)\right),
+\end{equation}
+after possibly decreasing $c_0$. The implied constants depend only on $A_0$.
+\end{lemma}
+
+\begin{proof}[Proof of \eqref{eq:SW-reciprocal} given \eqref{eq:SW}]
+Since $q\le(\log X)^{A_0}$ and $t\ge X$, \eqref{eq:SW} is valid uniformly
+throughout $[X,Y]$. Partial summation gives
+\[
+\sum_{\substack{X<p\le Y\\ p\equiv a\pmod q}}\frac1p
+\;=\;
+\frac{\pi(Y;q,a)}{Y}
+-\frac{\pi(X;q,a)}{X}
++
+\int_X^Y \frac{\pi(t;q,a)}{t^2}\,dt.
+\]
+Substituting \eqref{eq:SW}, the main term is
+\[
+\frac1{\varphi(q)}
+\left(
+\frac{\li(Y)}{Y}
+-\frac{\li(X)}{X}
++\int_X^Y\frac{\li(t)}{t^2}\,dt
+\right)
+\;=\;
+\frac1{\varphi(q)}\int_X^Y\frac{dt}{t\log t}
+\]
+(after partial integration of the right-hand side, using $\li'(t)=1/\log t$).
+The error term is
+\[
+O_{A_0}\!\left(
+\exp(-c_0\sqrt{\log X})
++
+\int_X^Y \frac{\exp(-c_0\sqrt{\log t})}{t}\,dt
+\right).
+\]
+With $u=\sqrt{\log t}$, the integral is
+\[
+\ll \int_{\sqrt{\log X}}^\infty u\,e^{-c_0u}\,du
+\;\ll\; \exp\!\left(-\tfrac{c_0}{2}\sqrt{\log X}\right),
+\]
+so, after decreasing $c_0$, the total error is
+$O_{A_0}(\exp(-c_0\sqrt{\log X}))$. \qed
+\end{proof}
+
+\begin{remark}[Uniformity in the Siegel--Walfisz input]\label{rem:SW-uniformity}
+The constant $c_0$ and all implied constants in Lemma~\ref{lem:SW}
+depend only on the fixed exponent $A_0$. In the sequel we use this lemma
+only with $A_0=1$; after this choice, the constants are absolute. In particular,
+when \eqref{eq:SW-reciprocal} is applied on an interval $(X,Y]$, the error term
+is uniform in the upper endpoint $Y$, because the proof bounded the error
+integral by the tail integral over $[X,\infty)$. The usual ineffectivity of the
+Siegel--Walfisz constant is irrelevant here, since all constants are fixed
+before $x\to\infty$ and the arguments are qualitative density-one estimates.
+\end{remark}
+
+\begin{remark}[Amount of Siegel--Walfisz actually needed]\label{rem:SW-strength-needed}
+The exponential error term in Lemma~\ref{lem:SW} is convenient, but the
+arguments below do not rely on optimizing this error. It would be enough, in
+all later applications, to have the following weaker consequence for one fixed
+large exponent $B_{\mathrm{SW}}$:
+\begin{equation}\label{eq:SW-weak-suffices}
+\sum_{\substack{X<p\le Y\\ p\equiv a\pmod q}}\frac1p
+=
+\frac1{\varphi(q)}\int_X^Y\frac{dt}{t\log t}
++
+O_{A_0,B_{\mathrm{SW}}}\bigl((\log X)^{-B_{\mathrm{SW}}}\bigr),
+\end{equation}
+uniformly for $3\le X\le Y$, $q\le(\log X)^{A_0}$, and $(a,q)=1$.
+Indeed, in Lemma~\ref{lem:prime-successor-mass} one has
+$X=\exp(\exp y)$, so the error in \eqref{eq:SW-weak-suffices} would be
+$O(\exp(-B_{\mathrm{SW}}y))$, which is negligible compared with the main term
+there. In Lemma~\ref{lem:block-eq} one has $X=\alpha\ge \exp y$ and
+$d\le y$; after summing over at most $\varphi(d)\le y$ reduced residue classes,
+the contribution of the error term would be
+$O(y^{1-B_{\mathrm{SW}}})$, which is $O(y^{-1/2})$ as soon as
+$B_{\mathrm{SW}}\ge 3$. Thus the later proof uses only standard
+Siegel--Walfisz uniformity for fixed powers of $\log X$; the stronger
+exponential form is quoted to keep the notation clean.
+\end{remark}
+
+\begin{lemma}[Brun--Titchmarsh, {\cite[Thm.~6.6]{IwaniecKowalski}, \cite{MontgomeryVaughan}}]\label{lem:BT}
+There is an absolute constant $C_{BT}>0$ such that for all $q\ge 1$, all $a$ coprime to $q$, and all $t\ge 2q$,
+\begin{equation}\label{eq:BT}
+\pi(t;q,a) \;\le\; \frac{C_{BT}\, t}{\varphi(q)\,\log(t/q)}.
+\end{equation}
+\end{lemma}
+
+\begin{lemma}[Mertens, {\cite[Thm.~427]{HardyWright}, \cite{Mertens-orig}}]\label{lem:Mertens}
+There is an absolute constant $\mathcal{M}\in\RR$ such that
+\begin{equation}\label{eq:Mertens}
+\sum_{p\le t} \frac{1}{p} \;=\; \log\log t \;+\; \mathcal{M} \;+\; O\!\left(\frac{1}{\log t}\right)
+\qquad (t\ge 2).
+\end{equation}
+\end{lemma}
+
+\begin{lemma}[Chebyshev, {\cite[Thm.~414]{HardyWright}}]\label{lem:Cheb}
+There is an absolute constant $C_{\theta}>0$ such that
+\begin{equation}\label{eq:Cheb}
+\sum_{p\le t} \log p \;\le\; C_{\theta}\, t \qquad (t\ge 2).
+\end{equation}
+\end{lemma}
+
+\subsection{Probabilistic primes}\label{ss:prob-model}
+
+Throughout the lower-bound arguments we work in the
+\emph{independent prime-divisibility model}: we declare each prime $p$ to be
+``selected'' independently with probability $1/p$. We then transfer back to
+genuine integers $n\le x$ via the Chinese remainder theorem.
+
+The transfer principle is the following standard observation, recorded once for
+later reuse:
+
+\begin{lemma}[CRT transfer]\label{lem:CRT}
+Let $P\ge 2$, $M=\prod_{p\le P}p$, and let $\mathcal{E}$ be an event depending
+only on the indicator vector $\bigl(\mathbf{1}_{p\mid n}\bigr)_{p\le P}$. Let
+$\PP_{\mathrm{prod}}(\mathcal{E})$ denote the probability of $\mathcal{E}$ in
+the product model where the $\mathbf{1}_{p\mid n}$ are independent
+Bernoulli$(1/p)$ random variables. Then
+\begin{equation}\label{eq:CRT}
+\frac{1}{x}\#\{n\le x : \mathcal{E}(n) \text{ holds}\} \;=\; \PP_{\mathrm{prod}}(\mathcal{E})\;+\;O\!\bigl(M/x\bigr).
+\end{equation}
+In particular, if $M=o(x)$, the density of integers $n\le x$ for which
+$\mathcal{E}$ holds equals $\PP_{\mathrm{prod}}(\mathcal{E})+o(1)$.
+\end{lemma}
+
+\begin{proof}[Sketch]
+By the Chinese remainder theorem the map $n\bmod M\mapsto (n\bmod p)_{p\le P}$
+is a bijection. Under the uniform distribution on $\ZZ/M\ZZ$, the events
+$\{p\mid n\}$ for $p\le P$ are therefore independent and each has probability
+$1/p$, exactly matching the product model. Hence the event $\mathcal{E}$ is a
+union of residue classes mod $M$, with measure
+$\PP_{\mathrm{prod}}(\mathcal{E})$ under the uniform distribution on $\ZZ/M\ZZ$.
+Counting integers in $[1,x]$ in each residue class incurs an error of $\pm 1$
+per class; since there are at most $M$ classes the total error is $O(M)$, and
+dividing by $x$ gives \eqref{eq:CRT}.
+\end{proof}
+
+When the event $\mathcal{E}$ depends not only on prime divisibilities but also
+on whether $n$ is divisible by some \emph{higher} prime power $p^2$, the same
+argument applies with $M$ replaced by $\prod_{p\le P}p^{k_p}$. We will not need
+this generalization.
+
+\begin{remark}[Squarefree products under the CRT transfer]\label{rem:CRT-products}
+In the lower-bound applications of Lemma~\ref{lem:CRT}, the constructed chain
+terms are squarefree products of primes whose selected status is among the
+coordinates $\bigl(\mathbf 1_{p\mid n}\bigr)_{p\le P}$. After transfer to an
+actual integer $n$, ``selected'' means $p\mid n$. Hence any squarefree product
+$e$ of selected primes with all prime factors at most $P$ satisfies $e\mid n$.
+In particular, whenever such an $e$ occurs for an integer $n\le x$, one
+automatically has $e\le n\le x$. Moreover $e\le M=\prod_{p\le P}p$, and in both
+lower-bound applications below we verify $M=o(x)$; thus all squarefree products
+considered in the CRT transfer are $<x$ for all sufficiently large $x$. No
+additional size condition is hidden in the passage from the product model to
+integers.
+\end{remark}
+
+\begin{lemma}[Chernoff bound for independent Bernoulli variables]\label{lem:chernoff}
+Let $I_1,\ldots,I_M$ be independent $\{0,1\}$-valued random variables, not
+necessarily identically distributed, and put
+\[
+W:=\sum_{k=1}^M I_k,\qquad \mu:=\EE W.
+\]
+Then, for every $0<\delta<1$,
+\begin{equation}\label{eq:chernoff}
+\PP\bigl(W\le (1-\delta)\mu\bigr)
+\le
+\exp\!\left(-\frac{\delta^2\mu}{2}\right).
+\end{equation}
+In particular,
+\begin{equation}\label{eq:chernoff-one-third}
+\PP\bigl(W\le (2/3)\mu\bigr)\le \exp(-\mu/18).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $p_k:=\EE I_k$. For $\lambda>0$, Markov's inequality and independence give
+\[
+\PP(W\le (1-\delta)\mu)
+=
+\PP\bigl(e^{-\lambda W}\ge e^{-\lambda(1-\delta)\mu}\bigr)
+\le
+e^{\lambda(1-\delta)\mu}
+\prod_{k=1}^M \bigl(1-p_k+p_k e^{-\lambda}\bigr).
+\]
+Using $1+u\le e^u$,
+\[
+\prod_{k=1}^M \bigl(1-p_k+p_k e^{-\lambda}\bigr)
+\le
+\exp\!\left(-(1-e^{-\lambda})\sum_{k=1}^M p_k\right)
+=
+\exp\!\left(-(1-e^{-\lambda})\mu\right).
+\]
+Choose $\lambda=\log(1/(1-\delta))$, so that $1-e^{-\lambda}=\delta$. Then
+\[
+\PP(W\le (1-\delta)\mu)
+\le
+\exp\!\left(
+-\mu\left[\delta-(1-\delta)\log\frac1{1-\delta}\right]
+\right).
+\]
+The elementary inequality
+\[
+\delta-(1-\delta)\log\frac1{1-\delta}\ge \frac{\delta^2}{2}
+\qquad (0<\delta<1)
+\]
+gives \eqref{eq:chernoff}. Taking $\delta=1/3$ gives
+\eqref{eq:chernoff-one-third}.
+\end{proof}
+
+\begin{remark}[CRT transfer for $x$-dependent events]\label{rem:CRT-x-dependent}
+Lemma~\ref{lem:CRT} is applied below to events $\mathcal E=\mathcal E_x$ and
+cutoffs $P=P(x)$ that vary with $x$. This causes no additional difficulty:
+for each fixed $x$, the lemma is an exact finite CRT statement with error
+$O(M/x)$, where $M=\prod_{p\le P}p$. Thus it is enough, in each lower-bound
+application, to verify $M=o(x)$ for the particular cutoff used there.
+
+In practice we verify the stronger condition $P=o(\log x)$. By
+Lemma~\ref{lem:Cheb},
+\[
+\log M=\sum_{p\le P}\log p\le C_\theta P=o(\log x),
+\]
+and therefore $M=\exp(o(\log x))=x^{o(1)}=o(x)$. The deterministic rules used
+later, such as choosing the least selected prime or the least admissible
+squarefree product, ensure that the relevant events are genuine functions of
+the finite indicator vector
+\[
+\bigl(\mathbf 1_{p\mid n}\bigr)_{p\le P}.
+\]
+No information about primes above $P$ or about higher prime powers is used in
+those CRT transfers.
+\end{remark}
+
+\section{Upper bound for $H(n)$}\label{sec:upper-H}
+
+In this section we prove:
+
+\begin{theorem}\label{thm:upper-H}
+For all but $o(x)$ integers $n\le x$,
+\begin{equation}\label{eq:thm-upper-H}
+H(n) \;\le\; \bigl(1 + o(1)\bigr)\logstar x.
+\end{equation}
+\end{theorem}
+
+The strategy: any divisor chain step $d_i<d_{i+1}$ with $d_{i+1}\equiv 1\pmod{d_i}$ that does not satisfy $d_{i+1}\ge \exp(\sqrt{d_i})$ creates a ``bad pair''
+$(d_i,d_{i+1})$. We show that bad pairs of moderate size are rare on average,
+so for almost all $n$ no large step is bad, forcing each chain step to climb
+the iterated tower by roughly one full level.
+
+\subsection{The bad-pair lemma}
+
+\begin{definition}[Bad pair, divisor version]\label{def:bad-pair-H}
+An ordered pair of positive integers $(d,e)$ is called
+\emph{H-bad} if
+\begin{equation}\label{eq:bad-pair-def-H}
+d<e, \qquad e\equiv 1 \pmod{d}, \qquad e<\exp\bigl(\sqrt{d}\bigr).
+\end{equation}
+\end{definition}
+
+\begin{lemma}\label{lem:bad-pair-density-H}
+Let $Y=Y(x)\to\infty$. The number of integers $n\le x$ such that some
+$H$-bad pair $(d,e)$ with $d\ge Y$ has both $d\mid n$ and $e\mid n$ is at most
+\begin{equation}\label{eq:bad-pair-count-H}
+O\!\left(x\, Y^{-1/2}\right) \;=\; o(x).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The congruence $e\equiv 1\pmod d$ forces $\gcd(d,e)=1$, hence
+$\mathrm{lcm}(d,e)=de$ and the number of $n\le x$ divisible by both
+$d$ and $e$ is $\lfloor x/(de)\rfloor\le x/(de)$. The total count is therefore
+bounded by
+\begin{equation}\label{eq:bad-pair-sum1-H}
+\sum_{d\ge Y} \frac{x}{d}
+\sum_{\substack{d<e<\exp(\sqrt d)\\ e\equiv 1\pmod d}} \frac{1}{e}.
+\end{equation}
+For fixed $d\ge 4$, write $e=ad+1$ with $1\le a\le \exp(\sqrt d)/d$:
+\begin{equation}\label{eq:inner-sum-H}
+\sum_{\substack{d<e<\exp(\sqrt d)\\ e\equiv 1\pmod d}}\frac{1}{e}
+\;\le\;\sum_{1\le a\le \exp(\sqrt d)/d} \frac{1}{ad+1}
+\;\le\; \frac{1}{d}\sum_{1\le a\le \exp(\sqrt d)/d} \frac{1}{a}.
+\end{equation}
+The harmonic sum is $\le 1+\log\bigl(\exp(\sqrt d)/d\bigr)\le \sqrt d$, valid for
+$d\ge 4$. Substituting,
+\begin{equation}\label{eq:inner-sum-H2}
+\sum_{\substack{d<e<\exp(\sqrt d)\\ e\equiv 1\pmod d}}\frac{1}{e}
+\;\le\; \frac{\sqrt d}{d}
+\;=\; d^{-1/2}.
+\end{equation}
+Inserting \eqref{eq:inner-sum-H2} into \eqref{eq:bad-pair-sum1-H},
+\begin{equation}\label{eq:bad-pair-sum2-H}
+\sum_{d\ge Y}\frac{x}{d}\cdot d^{-1/2}
+\;=\; x\sum_{d\ge Y} d^{-3/2}
+\;\ll\; x\, Y^{-1/2}.
+\end{equation}
+Choosing $Y\to\infty$ gives \eqref{eq:bad-pair-count-H}.
+\end{proof}
+
+\subsection{The U-tower lemma for $H$}
+
+Set
+\begin{equation}\label{eq:G-def}
+G(t) \;:=\; (\log t)^2.
+\end{equation}
+
+\begin{lemma}\label{lem:U-tower-H}
+For every $m\ge 5$,
+\begin{equation}\label{eq:U-tower-H}
+G(U_m) \;\le\; U_{m-1}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:logU1}, $\log U_m = 3T_{m-1}$, hence
+\[
+G(U_m) \;=\; (\log U_m)^2 \;=\; 9 T_{m-1}^2.
+\]
+We must show $9T_{m-1}^2\le T_{m-1}^3=U_{m-1}$, equivalently $T_{m-1}\ge 9$. Since
+$T_4=\exp\bigl(\exp\bigl(\exp(e)\bigr)\bigr)$ is enormous, this holds whenever
+$m-1\ge 1$, i.e.\ $m\ge 2$; we asked $m\ge 5$ to absorb the $\log 3$ in
+\eqref{eq:logU2} for any later use, but it is not needed for
+\eqref{eq:U-tower-H}.
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:upper-H}}
+
+Let $x$ be large, $L:=\logstar x$, and put $Y:=\lfloor L^{1/2}\rfloor$.
+By Lemma~\ref{lem:bad-pair-density-H}, all but $o(x)$ integers $n\le x$ have the
+property
+\begin{equation}\label{eq:no-H-bad}
+\text{no $H$-bad pair $(d,e)$ with $d\ge Y$ has both $d\mid n$ and $e\mid n$}.
+\tag{$\star_H$}
+\end{equation}
+Fix such an $n$ and let $d_1<d_2<\cdots<d_u$ be a divisor chain witnessing
+$H(n)=u$. Let
+$u_{\mathrm{small}}:=\#\{i:d_i<Y\}$ and $u_{\mathrm{large}}:=u-u_{\mathrm{small}}$.
+
+Trivially $u_{\mathrm{small}}\le Y$, since the small terms are distinct integers in $[1,Y)$.
+
+For each large index $i$ with $d_i\ge Y$ and $i<u$, the pair
+$(d_i,d_{i+1})$ satisfies $d_i<d_{i+1}$, $d_{i+1}\equiv 1\pmod{d_i}$, both
+divide $n$, and $d_i\ge Y$. Property \eqref{eq:no-H-bad} rules out
+$d_{i+1}<\exp(\sqrt{d_i})$, so
+\begin{equation}\label{eq:large-step-H}
+d_{i+1} \;\ge\; \exp\bigl(\sqrt{d_i}\bigr),
+\qquad\text{equivalently,}\qquad
+d_i \;\le\; (\log d_{i+1})^2 \;=\; G(d_{i+1}).
+\end{equation}
+
+Define the \emph{$U$-rank} of $d$ to be
+$\rho(d):=\min\{m\ge 0 : d\le U_m\}$. Since $d_u\le n\le x\le T_L\le U_L$, we
+have $\rho(d_u)\le L$.
+
+\begin{lemma}[Tower descent for $H$]\label{lem:tower-descent-H}
+If $d_i\ge Y$ and $i<u$ then $\rho(d_i)\le \rho(d_{i+1})-1$, provided
+$\rho(d_{i+1})\ge 6$.
+\end{lemma}
+
+\begin{proof}
+Set $m:=\rho(d_{i+1})$. Then $d_{i+1}\le U_m$, so by \eqref{eq:large-step-H} and
+Lemma~\ref{lem:U-tower-H},
+\begin{equation}\label{eq:tower-descent-H-comp}
+d_i \;\le\; G(d_{i+1}) \;\le\; G(U_m) \;\le\; U_{m-1},
+\end{equation}
+provided $m\ge 5$ so that $U_m\ge T_5\ge 9$. Hence $\rho(d_i)\le m-1=\rho(d_{i+1})-1$.
+\end{proof}
+
+For completeness, we spell out the rank count used in the next paragraph.
+The terms with $d_i\ge Y$ form a suffix of the chain, since the chain is
+strictly increasing. Also $\rho(d_i)$ is nondecreasing in $i$. If there is no
+index $i$ with $d_i\ge Y$ and $\rho(d_i)\ge 6$, there is nothing to count.
+Otherwise let $i_0$ be the first such index. Then for every $i_0\le i<u$ we
+have $d_i\ge Y$ and
+\[
+\rho(d_{i+1})\ge \rho(d_i)\ge 6,
+\]
+so Lemma~\ref{lem:tower-descent-H} gives
+\[
+\rho(d_{i+1})\ge \rho(d_i)+1.
+\]
+Therefore
+\[
+\rho(d_u)\ge \rho(d_{i_0})+(u-i_0)\ge 6+(u-i_0).
+\]
+Thus the number of large terms with rank at least $6$ is
+\[
+u-i_0+1\le \rho(d_u)-5\le L.
+\]
+
+The number of large terms with $\rho(d_i)\ge 6$ is therefore at most $\rho(d_u)\le L$. The remaining large terms have $\rho(d_i)\le 5$, hence $d_i\le U_5$, hence there are $O(1)$ of them.
+
+Putting everything together,
+\begin{equation}\label{eq:H-final-bound}
+H(n) \;=\; u_{\mathrm{small}}+u_{\mathrm{large}}
+\;\le\; Y \;+\; L \;+\; O(1)
+\;=\; L \;+\; O(L^{1/2})
+\;=\; (1+o(1))L.
+\end{equation}
+This is exactly \eqref{eq:thm-upper-H}. \qed
+
+\section{Upper bound for $h(n)$}\label{sec:upper-h}
+
+In this section we prove:
+
+\begin{theorem}\label{thm:upper-h}
+For all but $o(x)$ integers $n\le x$,
+\begin{equation}\label{eq:thm-upper-h}
+h(n) \;\le\; \Bigl(\tfrac12 + o(1)\Bigr)\logstar x.
+\end{equation}
+\end{theorem}
+
+The qualitative strategy is the same as for $H$, but the analogue of
+the bad-pair lemma is sharper because $p,q$ must both be primes. The cost of
+``$q\equiv 1\pmod p$ and $q$ prime'' is roughly $1/(\varphi(p)\log q)$ rather
+than $1/q$, and a Brun--Titchmarsh estimate makes the bad-prime-pair tail
+small enough to push the cutoff $\exp(\sqrt p)$ all the way up to
+$Q(p):=\exp\bigl(\exp(p/(\log p)^2)\bigr)$. This faster threshold means each
+prime-chain step descends \emph{two} levels of the iterated tower, halving
+the count.
+
+\subsection{The bad-prime-pair lemma}
+
+For a prime $p\ge 3$ define
+\begin{equation}\label{eq:Q-def}
+Q(p) \;:=\; \exp\!\Bigl(\exp\!\Bigl(\frac{p}{(\log p)^2}\Bigr)\Bigr).
+\end{equation}
+
+\begin{definition}[Bad prime pair]\label{def:bad-pair-h}
+An ordered pair of primes $(p,q)$ is called \emph{$h$-bad} if
+\begin{equation}\label{eq:bad-pair-def-h}
+p<q, \qquad q\equiv 1 \pmod p, \qquad q<Q(p).
+\end{equation}
+\end{definition}
+
+\begin{lemma}\label{lem:bad-pair-density-h}
+Let $Y\to\infty$. The number of $n\le x$ such that some $h$-bad pair $(p,q)$
+with $p\ge Y$ has both $p\mid n$ and $q\mid n$ is $o(x)$.
+\end{lemma}
+
+\begin{proof}
+For fixed prime $p$ we estimate
+\begin{equation}\label{eq:bad-prime-pair-S}
+\mathcal{S}(p) \;:=\; \sum_{\substack{p<q\le Q(p)\\ q\equiv 1\pmod p\\ q\text{ prime}}}\frac{1}{q}.
+\end{equation}
+Split this into the ranges $p<q\le p^2$ and $p^2<q\le Q(p)$.
+
+\emph{Range $p<q\le p^2$.} Here $q$ is one of at most $p$ primes (in fact, the
+trivial bound $q=p+1,\,2p+1,\dots$ gives at most $p-1$ candidates), so
+\begin{equation}\label{eq:bad-h-low}
+\sum_{\substack{p<q\le p^2\\ q\equiv 1\pmod p\\ q\text{ prime}}}\frac{1}{q}
+\;\le\; \sum_{a=1}^{p-1}\frac{1}{ap+1}
+\;\le\; \frac{1}{p}\sum_{a=1}^{p-1}\frac1a
+\;\ll\; \frac{\log p}{p}.
+\end{equation}
+
+\emph{Range $p^2<q\le Q(p)$.} By Brun--Titchmarsh (Lemma~\ref{lem:BT}), for
+$t\ge 2p$,
+\[
+\pi(t;p,1) \;\le\; \frac{C_{BT}\,t}{\varphi(p)\log(t/p)}
+\;\le\; \frac{2C_{BT}\,t}{p\log(t/p)},
+\]
+since $\varphi(p)=p-1\ge p/2$ for $p\ge 2$. Partial summation yields
+\begin{align}
+\sum_{\substack{p^2<q\le Q(p)\\ q\equiv 1\pmod p\\ q\text{ prime}}}\frac{1}{q}
+&= \int_{p^2}^{Q(p)} \frac{d\pi(t;p,1)}{t}\nonumber\\
+&\le \frac{\pi(Q(p);p,1)}{Q(p)} + \int_{p^2}^{Q(p)}\frac{\pi(t;p,1)}{t^2}\,dt\nonumber\\
+&\ll\; \frac{1}{p}\int_{p^2}^{Q(p)} \frac{dt}{t\log(t/p)}\nonumber\\
+&=\;\frac{1}{p}\Bigl[\log\log(t/p)\Bigr]_{p^2}^{Q(p)}\nonumber\\
+&\ll\; \frac{1}{p}\Bigl(\log\log Q(p) - \log\log p\Bigr).\label{eq:BT-pre}
+\end{align}
+In the Stieltjes partial summation formula the lower boundary contribution
+$-\pi(p^2;p,1)/p^2$ is nonpositive and has therefore been discarded. The upper
+boundary term is harmless: by Brun--Titchmarsh it is
+\[
+\frac{\pi(Q(p);p,1)}{Q(p)}
+\ll
+\frac{1}{p\log(Q(p)/p)},
+\]
+which is absorbed by the displayed integral bound.
+By definition \eqref{eq:Q-def}, $\log\log Q(p)= p/(\log p)^2$, so
+\begin{equation}\label{eq:BT-final}
+\sum_{\substack{p^2<q\le Q(p)\\ q\equiv 1\pmod p\\ q\text{ prime}}}\frac{1}{q}
+\;\ll\; \frac{1}{p}\cdot\frac{p}{(\log p)^2}
+\;=\; \frac{1}{(\log p)^2}.
+\end{equation}
+Combining \eqref{eq:bad-h-low} and \eqref{eq:BT-final},
+\begin{equation}\label{eq:Sp-bound}
+\mathcal{S}(p) \;\ll\; \frac{\log p}{p} + \frac{1}{(\log p)^2}.
+\end{equation}
+
+For each $h$-bad pair $(p,q)$ with $p\ge Y$, the count of $n\le x$ with
+$pq\mid n$ is $\le x/(pq)$ (recalling $\gcd(p,q)=1$). Summing,
+\begin{align}
+\#\{n\le x\colon\exists\,(p,q)\text{ $h$-bad}, p\ge Y, pq\mid n\}
+&\le\; x\sum_{p\ge Y}\frac{\mathcal{S}(p)}{p}\nonumber\\
+&\ll\; x\sum_{p\ge Y}\Bigl(\frac{\log p}{p^2}+\frac{1}{p(\log p)^2}\Bigr).\label{eq:bad-pair-sum-h}
+\end{align}
+Both series converge: $\sum_p (\log p)/p^2<\infty$ and $\sum_p 1/(p(\log p)^2)<\infty$.
+Indeed, for $p\ge 3$ both prime sums are dominated by the corresponding
+integer sums:
+\[
+\sum_{p\ge 3}\frac{\log p}{p^2}
+\le
+\sum_{n\ge 3}\frac{\log n}{n^2}
+<\infty,
+\qquad
+\sum_{p\ge 3}\frac{1}{p(\log p)^2}
+\le
+\sum_{n\ge 3}\frac{1}{n(\log n)^2}
+<\infty.
+\]
+The second integer sum converges by the integral test.
+Therefore the right-hand side of \eqref{eq:bad-pair-sum-h} is $o(x)$
+as $Y\to\infty$.
+\end{proof}
+
+\subsection{The U-tower lemma for $h$}
+
+Define
+\begin{equation}\label{eq:f-def}
+f(t) \;:=\; C_f\,(\log\log t)\bigl(\log\log\log t\bigr)^2,
+\end{equation}
+where $C_f$ is a fixed absolute constant chosen large enough below.
+
+\begin{lemma}\label{lem:U-tower-h}
+There exists an integer $m_0^*=m_0^*(C_f)\ge 6$ such that, for all $m\ge m_0^*$,
+\begin{equation}\label{eq:U-tower-h}
+f(U_m) \;\le\; U_{m-2}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:logU2}, $\log\log U_m = T_{m-2}+\log 3$, and by \eqref{eq:logU3},
+$\log\log\log U_m = T_{m-3}+O(T_{m-3}^{-1})$. Therefore, for $m\ge 5$,
+\begin{align}
+f(U_m) &= C_f\,(T_{m-2}+\log 3)\bigl(T_{m-3}+O(T_{m-3}^{-1})\bigr)^2\nonumber\\
+&\le 2C_f\, T_{m-2}\,T_{m-3}^2,\label{eq:fUm}
+\end{align}
+provided $T_{m-3}\ge 100$ (take $m\ge 6$). Now $T_{m-3}=\log T_{m-2}$, so
+$T_{m-3}^2=(\log T_{m-2})^2$. We must compare this with $T_{m-2}^2$:
+\[
+\frac{f(U_m)}{U_{m-2}}\;\le\;\frac{2C_f\,T_{m-2}\,T_{m-3}^2}{T_{m-2}^3}\;=\;\frac{2C_f\,(\log T_{m-2})^2}{T_{m-2}^2}.
+\]
+Since $(\log s)^2/s^2\to 0$ as $s\to\infty$, this ratio tends to $0$, so
+$f(U_m)/U_{m-2}\le 1$ for all sufficiently large $m$. Concretely, choose
+$s_0=s_0(C_f)$ so large that
+\[
+   \frac{2C_f(\log s)^2}{s^2}\le 1 \qquad (s\ge s_0),
+\]
+and then choose $m_0^*$ so that $m_0^*\ge 6$ and
+$T_{m_0^*-2}\ge s_0$. This yields \eqref{eq:U-tower-h}.
+\end{proof}
+
+\begin{remark}[Monotonicity of the inversion function]\label{rem:f-monotone}
+We will use that the function
+\[
+f(t)=C_f(\log\log t)(\log\log\log t)^2
+\]
+is increasing for all sufficiently large $t$, in particular for $t\ge T_3$.
+Indeed, writing $s=\log\log t$, we have
+\[
+\frac{1}{C_f}f(t)=s(\log s)^2.
+\]
+For $s>1$,
+\[
+\frac{d}{ds}\bigl(s(\log s)^2\bigr)
+=
+(\log s)^2+2\log s>0,
+\]
+and $s=\log\log t$ is itself increasing in $t$. Since
+$\log\log T_3=T_1>1$, the asserted monotonicity holds for $t\ge T_3$.
+\end{remark}
+
+\subsection{Proof of Theorem~\ref{thm:upper-h}}
+
+Let $x$ be large, $L:=\logstar x$, $Y:=\lfloor L^{1/2}\rfloor$. By
+Lemma~\ref{lem:bad-pair-density-h}, all but $o(x)$ integers $n\le x$ satisfy
+\begin{equation}\label{eq:no-h-bad}
+\text{no $h$-bad pair $(p,q)$ with $p\ge Y$ has both $p\mid n$ and $q\mid n$}.
+\tag{$\star_h$}
+\end{equation}
+Fix such an $n$, and let $p_1<p_2<\cdots<p_\ell$ be a prime chain witnessing
+$h(n)=\ell$. Let $\ell_{\mathrm{small}}=\#\{i:p_i<Y\}\le Y$, and $\ell_{\mathrm{large}}=\ell-\ell_{\mathrm{small}}$.
+
+For each large index $i$ with $p_i\ge Y$ and $i<\ell$, the pair $(p_i,p_{i+1})$ is
+not $h$-bad, so
+\begin{equation}\label{eq:large-step-h}
+p_{i+1} \;\ge\; Q(p_i)
+\;=\; \exp\!\Bigl(\exp\!\Bigl(\tfrac{p_i}{(\log p_i)^2}\Bigr)\Bigr).
+\end{equation}
+Solving \eqref{eq:large-step-h} for $p_i$:
+\[
+\frac{p_i}{(\log p_i)^2} \;\le\; \log\log p_{i+1},
+\quad\text{so}\quad
+p_i \;\le\; (\log p_i)^2\,\log\log p_{i+1}.
+\]
+We extract a clean algebraic inversion. Set $a:=\log p_i$, $b:=\log\log p_{i+1}$;
+the inequality above reads $e^a\le a^2 b$.
+
+Since $p_i\ge Y$ and $Y\to\infty$, \eqref{eq:large-step-h} gives
+\[
+   b=\log\log p_{i+1}\ge \frac{p_i}{(\log p_i)^2}\longrightarrow\infty,
+\]
+uniformly for the large-index steps under consideration. Thus all estimates
+below that require $b$ sufficiently large apply after increasing $x$ if
+necessary.
+
+More explicitly, after increasing $x$ if necessary we have $Y>e^2$, and the
+function $t\mapsto t/(\log t)^2$ is increasing for $t>e^2$. Hence throughout
+the large-index part of the chain,
+\[
+   b=\log\log p_{i+1}
+   \ge \frac{p_i}{(\log p_i)^2}
+   \ge \frac{Y}{(\log Y)^2}
+   \longrightarrow \infty .
+\]
+Thus the threshold beyond which the elementary inversion below is valid may be
+chosen independently of the particular chain and of the index $i$.
+
+We claim
+\begin{equation}\label{eq:a-bound}
+a \;\le\; \log b\;+\;3\log\log b
+\end{equation}
+for all sufficiently large $b$. Indeed, the function $u\mapsto e^u/u^2$ is
+increasing for $u>2$. If $a>\log b+3\log\log b$, then
+\[
+\frac{e^a}{a^2}
+\;>\;
+\frac{\exp(\log b+3\log\log b)}{(\log b+3\log\log b)^2}
+\;=\;
+b\cdot\frac{(\log b)^3}{(\log b+3\log\log b)^2}
+\;>\;b
+\]
+for all sufficiently large $b$, contradicting $e^a\le a^2 b$. This establishes
+\eqref{eq:a-bound}. Therefore $\log p_i = a\le \log b + 3\log\log b$, and so
+\begin{equation}\label{eq:p_i-bound}
+p_i \;\le\; (\log p_i)^2\cdot b
+\;=\; a^2\cdot b
+\;\le\; (\log b + 3\log\log b)^2\cdot b
+\;\le\; C_f\,b\,(\log b)^2,
+\end{equation}
+for an absolute constant $C_f>0$ (take $C_f=16$, say) and all sufficiently
+large $b$. Recalling $b=\log\log p_{i+1}$, we obtain
+\begin{equation}\label{eq:p_i-final}
+p_i \;\le\; C_f\,(\log\log p_{i+1})\,\bigl(\log\log\log p_{i+1}\bigr)^2 \;=\; f(p_{i+1}).
+\end{equation}
+
+We now run the same $U$-rank descent as in Section~\ref{sec:upper-H}. Let
+$\rho(p):=\min\{m\ge 0:p\le U_m\}$.
+
+\begin{lemma}[Tower descent for $h$]\label{lem:tower-descent-h}
+Provided $\rho(p_{i+1})\ge m_0^*$ (where $m_0^*$ is from Lemma~\ref{lem:U-tower-h})
+and $p_i\ge Y\ge 100$, $i<\ell$,
+\begin{equation}\label{eq:tower-descent-h}
+\rho(p_i) \;\le\; \rho(p_{i+1})\;-\;2.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Set $m:=\rho(p_{i+1})\ge m_0^*$. Then $p_{i+1}\le U_m$. The function
+$f(t)=C_f(\log\log t)(\log\log\log t)^2$ is monotone increasing for
+$t\ge T_3$, hence by \eqref{eq:p_i-final},
+\[
+p_i \;\le\; f(p_{i+1})\;\le\; f(U_m)\;\le\; U_{m-2},
+\]
+the last inequality being Lemma~\ref{lem:U-tower-h}. Hence $\rho(p_i)\le m-2$.
+\end{proof}
+
+Again we record the counting argument explicitly. The terms with $p_i\ge Y$
+form a suffix of the prime chain, and $\rho(p_i)$ is nondecreasing in $i$.
+If there is no index $i$ with $p_i\ge Y$ and $\rho(p_i)\ge m_0^*$, then there
+are no large high-rank terms to count. Otherwise let $i_0$ be the first such
+index. For every $i_0\le i<\ell$ we have $p_i\ge Y$ and
+\[
+\rho(p_{i+1})\ge \rho(p_i)\ge m_0^*,
+\]
+so Lemma~\ref{lem:tower-descent-h} gives
+\[
+\rho(p_{i+1})\ge \rho(p_i)+2.
+\]
+Consequently
+\[
+\rho(p_\ell)\ge \rho(p_{i_0})+2(\ell-i_0)\ge m_0^*+2(\ell-i_0).
+\]
+Thus the number of large terms with rank at least $m_0^*$ is at most
+\[
+\ell-i_0+1
+\le
+1+\frac{\rho(p_\ell)-m_0^*}{2}
+\le
+\frac{L}{2}+O(1).
+\]
+
+Since $p_\ell\le n\le x\le T_L\le U_L$, we have $\rho(p_\ell)\le L$. The number
+of large terms $i$ with $\rho(p_i)\ge m_0^*$ is therefore at most $L/2+O(1)$,
+since each such large term is at least 2 levels below the next. The remaining
+large terms have $\rho(p_i)<m_0^*$, hence $p_i<U_{m_0^*-1}=O(1)$, so there are
+$O(1)$ of them.
+
+Adding $\ell_{\mathrm{small}}\le Y=\lfloor L^{1/2}\rfloor$,
+\begin{equation}\label{eq:h-final-bound}
+h(n) \;=\; \ell \;\le\; \tfrac{L}{2} + O(1) + Y
+\;=\; \tfrac{L}{2} + O(L^{1/2})
+\;=\; \bigl(\tfrac12 + o(1)\bigr) L,
+\end{equation}
+proving \eqref{eq:thm-upper-h}. \qed
+
+\section{Lower bound for $h(n)$}\label{sec:lower-h}
+
+We now prove the matching lower bound:
+
+\begin{theorem}\label{thm:lower-h}
+For all but $o(x)$ integers $n\le x$,
+\begin{equation}\label{eq:thm-lower-h}
+h(n) \;\ge\; \Bigl(\tfrac12 - o(1)\Bigr)\logstar x.
+\end{equation}
+\end{theorem}
+
+The strategy is to construct, for ``random'' $n$, a long prime chain $p_1<\cdots<p_R$ greedily: at each stage we use Siegel--Walfisz to ensure that the next prime in the residue class $1\bmod p_j$, lying inside a controlled tower window, exists with overwhelming probability. We then transfer to integers via the CRT.
+
+Throughout this section we put
+\[
+   L:=\logstar x.
+\]
+All choices of scales below are functions of this parameter $L$, and hence of
+$x$.
+
+\subsection{The prime-successor mass lemma}
+
+\begin{lemma}[Uniform prime-successor mass]\label{lem:prime-successor-mass}
+There are absolute constants $c_0>0$, $y_0\ge 1$ such that the following
+holds. For every $y\ge y_0$, every prime $p\le y$, and every $\eta\ge 2$,
+\[
+\sum_{\substack{\exp(\exp y)<q\le \exp(\exp(\eta y))\\
+q\equiv 1\pmod p\\ q\ {\rm prime}}}\frac1q
+\;=\;
+\frac{(\eta-1)y}{\varphi(p)}
+\;+\;
+O\!\left(\exp(-c_0\exp(y/2))\right),
+\]
+uniformly in $p,y,\eta$. In particular,
+\[
+\sum_{\substack{\exp(\exp y)<q\le \exp(\exp(\eta y))\\
+q\equiv 1\pmod p\\ q\ {\rm prime}}}\frac1q
+\;\ge\;
+\frac12\,\frac{(\eta-1)y}{p}
+\]
+for all sufficiently large $y$.
+\end{lemma}
+
+\begin{proof}
+Let
+\[
+Z=\exp(\exp y),\qquad X=\exp(\exp(\eta y)).
+\]
+For $t\ge Z$, $\log t\ge \exp y$, hence $p\le y\le(\log Z)$ for all
+sufficiently large $y$, so Lemma~\ref{lem:SW} with $A_0=1$ applies on $[Z,X]$.
+By \eqref{eq:SW-reciprocal},
+\[
+\sum_{\substack{Z<q\le X\\ q\equiv 1\pmod p}}\frac1q
+\;=\;
+\frac1{\varphi(p)}\int_Z^X\frac{dt}{t\log t}
+\;+\;
+O\!\left(\exp(-c_0\sqrt{\log Z})\right).
+\]
+The integral evaluates to
+$\log\log X-\log\log Z=(\eta-1)y$, and $\sqrt{\log Z}=\exp(y/2)$, so the
+error is $O(\exp(-c_0\exp(y/2)))$. This proves the asymptotic formula.
+
+Since $p\le y$, $\varphi(p)=p-1\le p$, and $(\eta-1)y/p\ge 1$ for $\eta\ge 2$
+and $p\le y$. For sufficiently large $y$, the error term is therefore smaller
+than half the main lower bound, giving
+\[
+\sum_{\substack{Z<q\le X\\ q\equiv 1\pmod p}}\frac1q
+\;\ge\;
+\frac12\,\frac{(\eta-1)y}{p}. \qedhere
+\]
+\end{proof}
+
+\subsection{Tower scale for $h$ and the greedy construction}
+
+Fix $B:=L^2$ and the integers
+\begin{equation}\label{eq:m0-mj-h}
+m_0 \;=\; \lfloor L^{1/2}\rfloor,
+\qquad
+m_j \;=\; m_0+2(j-1) \quad (j\ge 1),
+\end{equation}
+so that $m_j$ increments by 2. Let $R$ be the largest integer with $m_R\le L-2$;
+then
+\begin{equation}\label{eq:R-h}
+R \;=\; \frac{L-m_0-2}{2} + O(1) \;=\; \Bigl(\tfrac12 - o(1)\Bigr)L.
+\end{equation}
+
+Define
+\begin{equation}\label{eq:y_j-h}
+y_j \;=\; T_{m_j}/B \qquad (1\le j\le R+1).
+\end{equation}
+
+Since $T_{m_{j+1}}=T_{m_j+2}=\exp\bigl(\exp(T_{m_j})\bigr)=\exp(\exp(B y_j))$, we have
+\begin{equation}\label{eq:y_j+1-vs-y_j}
+y_{j+1} \;=\; \frac{T_{m_{j+1}}}{B}\;=\;\frac{\exp(\exp(B y_j))}{B}.
+\end{equation}
+In particular,
+\begin{equation}\label{eq:loglog-y_{j+1}}
+\log\log y_{j+1} \;=\; \log\bigl(\exp(B y_j)-\log B\bigr)\;=\; By_j + O(1).
+\end{equation}
+
+\begin{lemma}\label{lem:greedy-h}
+Work in the independent prime model on primes $r\le y_R$. The probability that
+the following event $\mathcal{C}_h$ \emph{fails} is $o(1)$:
+\begin{quote}
+$\mathcal{C}_h$:\ \ there exist primes $p_1<\cdots<p_R$ all selected, with
+$p_j\le y_j$ and $p_{j+1}\equiv 1\pmod{p_j}$ for $1\le j<R$.
+\end{quote}
+\end{lemma}
+
+\begin{proof}
+We expose primes in stages and make deterministic choices throughout. If there
+is at least one selected prime $p\le y_1$, define $p_1$ to be the least
+selected prime $\le y_1$; otherwise the construction fails at the initial
+stage.
+
+The probability of initial failure is
+\begin{equation}\label{eq:greedy-init}
+\prod_{p\le y_1}\!\bigl(1-1/p\bigr)
+\;\le\;
+\exp\!\Bigl(-\!\!\sum_{p\le y_1}\!1/p\Bigr)
+\;=\;
+\exp(-\log\log y_1+O(1)).
+\end{equation}
+Since $y_1=T_{m_0}/B$ and $m_0\to\infty$, we have
+$\log\log y_1=T_{m_0-2}+O(\log B)\to\infty$, so \eqref{eq:greedy-init} is
+$o(1)$.
+
+Now suppose that $p_1,\dots,p_j$ have already been defined, with
+$p_i\le y_i$ and $p_{i+1}\equiv 1\pmod{p_i}$ for $1\le i<j$. Define the
+candidate set
+\[
+\mathcal Q_j(p_j)
+\;:=\;
+\bigl\{
+q\ \text{prime}:
+q\equiv 1\!\pmod{p_j},\
+\exp(\exp y_j)<q\le \exp(\exp((B/2)y_j))
+\bigr\}.
+\]
+If at least one prime in $\mathcal Q_j(p_j)$ is selected, define $p_{j+1}$ to
+be the least selected prime in $\mathcal Q_j(p_j)$; otherwise the construction
+fails at stage $j$.
+
+By induction, every prime whose selection has been inspected before stage $j$
+is at most $y_j$: the initial step inspects only primes $\le y_1$, and the
+search interval at stage $r<j$ is contained in $(\exp(\exp y_r),y_{r+1}]$,
+with $y_{r+1}\le y_j$. On the other hand every prime in
+$\mathcal Q_j(p_j)$ is $>\exp(\exp y_j)>y_j$. Thus the primes inspected at
+stage $j$ are disjoint from all previously inspected primes. This justifies
+conditioning on the entire past while retaining independent Bernoulli
+selection for the primes in $\mathcal Q_j(p_j)$.
+
+For $L$ large, this search interval is contained in
+$(\exp(\exp y_j),\,y_{j+1}]$, since by \eqref{eq:y_j+1-vs-y_j}
+\[
+\exp(\exp((B/2)y_j))
+\;\ll\;
+\frac{\exp(\exp(B y_j))}{B}
+\;=\;
+y_{j+1}.
+\]
+Hence, on success at stage $j$, $p_{j+1}\le y_{j+1}$. Also
+$p_{j+1}>\exp(\exp y_j)>y_j\ge p_j$, so the chain remains strictly increasing.
+
+Apply Lemma~\ref{lem:prime-successor-mass} with $y=y_j$, $\eta=B/2$, and
+modulus $p=p_j\le y_j$. Since $B=L^2$, we have $\eta\ge 2$ for large $L$, so
+\begin{equation}\label{eq:greedy-mass}
+\sum_{q\in\mathcal Q_j(p_j)}\frac1q
+\;\ge\;
+\frac12\,\frac{(B/2-1)y_j}{p_j}
+\;\ge\;
+\frac{B}{8},
+\end{equation}
+for $B\ge 4$, since $p_j\le y_j$.
+
+The construction up to stage $j$ depends only on selected primes lying below
+the present search interval, whereas every prime in $\mathcal Q_j(p_j)$ is
+$>\exp(\exp y_j)>y_j\ge p_j$. Hence, conditional on the past, the selection
+events for primes in $\mathcal Q_j(p_j)$ are still independent Bernoulli events
+with probabilities $1/q$. Therefore
+\[
+\PP(\text{stage $j$ fails}\mid\text{past})
+\;\le\;
+\prod_{q\in\mathcal Q_j(p_j)}\!\bigl(1-1/q\bigr)
+\;\le\;
+\exp\!\Bigl(-\!\!\!\sum_{q\in\mathcal Q_j(p_j)}\!\!\!1/q\Bigr)
+\;\le\;
+\exp(-B/8)
+\;=\;
+\exp(-L^2/8).
+\]
+Union-bounding over $1\le j<R\le L$,
+\begin{equation}\label{eq:greedy-union}
+\PP(\mathcal{C}_h^c) \;\le\; o(1) + L\cdot\exp(-L^2/8) \;=\; o(1). \qedhere
+\end{equation}
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:lower-h}}
+
+We apply Lemma~\ref{lem:CRT} with the cutoff $P:=y_R$. The event
+$\mathcal{C}_h$ depends only on which primes $p\le y_R$ divide $n$, so it is a
+union of residue classes mod $M:=\prod_{p\le y_R}p$. We need $M=o(x)$.
+
+Indeed, the initial choice of $p_1$ only inspects primes $p\le y_1\le y_R$.
+At stage $j<R$, the search interval $\mathcal Q_j(p_j)$ is contained in
+$(\exp(\exp y_j),y_{j+1}]$, as shown above, and hence contains only primes
+$\le y_R$. The deterministic rule ``choose the least selected prime'' makes the
+event $\mathcal C_h$ a function only of the indicator vector
+$\bigl(\mathbf 1_{p\mid n}\bigr)_{p\le y_R}$. No higher prime powers are used.
+
+Since $m_R\le L-2$, $y_R\le T_{L-2}/B$. On the other hand, by the definition of
+$L=\logstar x$ we have
+\[
+   T_{L-1}<x\le T_L
+\]
+for all sufficiently large $L$. Taking one logarithm in the lower inequality
+and using $\log T_{L-1}=T_{L-2}$ gives
+\begin{equation}\label{eq:logx-vs-T}
+\log x \;>\; T_{L-2}.
+\end{equation}
+Hence $y_R\le T_{L-2}/L^2 = o(\log x)$. By Chebyshev (Lemma~\ref{lem:Cheb}),
+$\log M=\sum_{p\le y_R}\log p\le C_\theta y_R = o(\log x)$, so $M=x^{o(1)}=o(x)$.
+
+We also record explicitly that the constructed prime divisibilities are
+compatible with the restriction $n\le x$. If $\mathcal C_h$ is realized by an
+integer $n$, then each constructed prime $p_j$ is one of the primes whose
+indicator is $1$, and hence $p_j\mid n$. Since the primes $p_1,\dots,p_R$ are
+distinct and all lie below $P=y_R$, their product is at most
+\[
+\prod_{p\le y_R}p=M=o(x).
+\]
+Thus the CRT transfer is prescribing a squarefree divisor of size $<x$ for all
+sufficiently large $x$; equivalently, by Remark~\ref{rem:CRT-products}, no
+extra size obstruction is present.
+
+By Lemma~\ref{lem:CRT}, the density of $n\le x$ for which $\mathcal{C}_h$ holds
+is $\PP_{\mathrm{prod}}(\mathcal{C}_h)+O(M/x)=1-o(1)$. Whenever $\mathcal{C}_h$
+holds, the chain witnesses $h(n)\ge R=(\tfrac12-o(1))L$. This proves
+\eqref{eq:thm-lower-h}. \qed
+
+\section{The subset-product successor lemma}\label{sec:subset-product}
+
+This section contains the key probabilistic ingredient for the lower bound on $H(n)$. We work in two steps. First, an abstract statement about random elements of finite abelian groups (Lemma~\ref{lem:subset-product}). Then a number-theoretic application that produces composite-divisor successors (Lemma~\ref{lem:composite-successor}).
+
+\subsection{Abstract subset-product lemma}
+
+Let $G$ be a finite abelian group, written multiplicatively, with identity
+$1_G$ and order $N=|G|$.
+
+In the next lemma no generation hypothesis is imposed on the sampled elements:
+they are only required to be independent and uniform. In the number-theoretic
+application the residue classes coming from good blocks need not generate $G$.
+
+\begin{lemma}\label{lem:subset-product}
+Let $g_1,\dots,g_K$ be independent uniformly distributed elements of $G$. Define
+\begin{equation}\label{eq:Z-def}
+Z \;:=\; \#\Bigl\{\emptyset\ne S\subseteq\{1,\dots,K\}:\;\prod_{i\in S} g_i = 1_G\Bigr\}.
+\end{equation}
+Then
+\begin{align}
+\EE[Z] &\;=\; \frac{2^K-1}{N}, \label{eq:EZ}\\
+\Var[Z] &\;\le\; \EE[Z], \label{eq:VarZ}\\
+\PP(Z=0) &\;\le\; \frac{N}{2^K-1}.\label{eq:PZzero}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+For each nonempty $S\subseteq[K]$, the random variable $X_S:=\prod_{i\in S}g_i$
+is uniformly distributed on $G$ (by independence of the $g_i$ and translation
+invariance), so $\PP(X_S=1_G)=1/N$. Summing,
+\[
+\EE[Z] \;=\; \sum_{\emptyset\ne S\subseteq[K]}\PP(X_S=1_G)
+\;=\;\frac{2^K-1}{N},
+\]
+proving \eqref{eq:EZ}.
+
+To bound the variance we show that for any two distinct nonempty subsets $S\ne T$
+of $[K]$, the random variables $X_S$ and $X_T$ are \emph{independent}. Pick
+\begin{equation}\label{eq:i0-def}
+i_0\;\in\;S\,\triangle\,T,
+\end{equation}
+the symmetric difference (which is nonempty since $S\ne T$). Without loss of
+generality $i_0\in S\setminus T$ (else swap $S,T$). Condition on the joint value
+of $\{g_j: j\ne i_0\}$. Under this conditioning $X_T$ is determined (because
+$i_0\notin T$), so $X_T$ takes a fixed value; meanwhile $X_S=g_{i_0}\cdot\prod_{i\in
+S\setminus\{i_0\}}g_i$ depends on $g_{i_0}$, which under our conditioning is
+uniformly distributed on $G$. Thus $X_S\mid \{g_j: j\ne i_0\}$ is uniform on $G$,
+hence in particular conditionally independent of $X_T$. Marginalizing,
+\begin{equation}\label{eq:XSXT-indep}
+X_S \;\text{and}\; X_T \;\text{are independent, both uniform on $G$.}
+\end{equation}
+Equivalently, for any $x_0,y_0\in G$, conditioning on all $g_j$ with
+$j\ne i_0$ gives
+\[
+\begin{aligned}
+\PP(X_S=x_0,\ X_T=y_0)
+&=
+\EE\!\left[
+   \mathbf 1_{\{X_T=y_0\}}\,
+   \PP(X_S=x_0\mid \{g_j:j\ne i_0\})
+ \right]  \\
+&=
+\frac1N\,\PP(X_T=y_0)
+=
+\frac1{N^2}.
+\end{aligned}
+\]
+This gives the asserted independence for every distinct pair
+$S\ne T$.
+Therefore $\PP(X_S=X_T=1_G)=1/N^2$. Hence
+\[
+\EE[Z^2] \;=\; \sum_{S}\PP(X_S=1)+\sum_{S\ne T}\PP(X_S=X_T=1)
+\;=\;\frac{2^K-1}{N}+\frac{(2^K-1)(2^K-2)}{N^2}.
+\]
+Subtracting $(\EE Z)^2=(2^K-1)^2/N^2$,
+\begin{equation}\label{eq:Var-formula}
+\Var Z \;=\; \frac{2^K-1}{N}-\frac{2^K-1}{N^2}
+\;=\;\frac{(2^K-1)(N-1)}{N^2}
+\;\le\; \frac{2^K-1}{N}\;=\;\EE Z,
+\end{equation}
+proving \eqref{eq:VarZ}.
+
+Finally, by Chebyshev's inequality,
+\[
+\PP(Z=0) \;\le\; \PP\bigl(|Z-\EE Z|\ge \EE Z\bigr) \;\le\; \frac{\Var Z}{(\EE Z)^2}
+\;\le\;\frac{1}{\EE Z} \;=\;\frac{N}{2^K-1},
+\]
+proving \eqref{eq:PZzero}.
+\end{proof}
+
+\begin{remark}[Near-uniform version]\label{rem:near-uniform}
+For our application, the $g_i$ are not exactly uniform on $G$ but only close to
+uniform in total variation. We record the precise reduction. Let $u_G$ denote
+the uniform probability measure on $G$, and suppose that the random variables
+$g_1,\dots,g_K$ are independent, with laws $\mu_i$ satisfying
+\[
+d_{\rm TV}(\mu_i,u_G)\le \eps \qquad (1\le i\le K).
+\]
+For each $i$, choose a maximal coupling of $g_i$ with a uniform random variable
+$\widetilde g_i\sim u_G$ such that
+\[
+\PP(g_i\ne \widetilde g_i)=d_{\rm TV}(\mu_i,u_G)\le \eps,
+\]
+and choose these couplings independently for different $i$. Then
+$\widetilde g_1,\dots,\widetilde g_K$ are independent and exactly uniform on
+$G$, and by the union bound
+\[
+\PP\bigl((g_1,\dots,g_K)\ne(\widetilde g_1,\dots,\widetilde g_K)\bigr)
+\le K\eps.
+\]
+Let $Z$ be the number of identity subset-products formed from the $g_i$, and
+let $\widetilde Z$ be the corresponding number for the $\widetilde g_i$. The
+events $\{Z=0\}$ and $\{\widetilde Z=0\}$ can differ only if at least one
+$g_i$ differs from $\widetilde g_i$. Hence Lemma~\ref{lem:subset-product} gives
+\begin{equation}\label{eq:PZzero-perturbed}
+\PP(Z=0)
+\le
+\PP(\widetilde Z=0)+K\eps
+\le
+\frac{N}{2^K-1}+K\eps.
+\end{equation}
+More generally, if the $i$th total-variation gap is $\eps_i$, the additive
+error is $\sum_{i=1}^K \eps_i$.
+\end{remark}
+
+\subsection{The composite-successor lemma}
+
+In the next lemma the subscript $A$ in $O_A(\cdot)$ refers only to the fixed
+absolute window parameter used later in Lemma~\ref{lem:composite-successor}.
+In the application below we take $A=20$, so all such constants are absolute.
+
+\begin{lemma}[Weighted residue equidistribution in a block]\label{lem:block-eq}
+Let $d\le y$, let $G:=(\ZZ/d\ZZ)^\times$, and let
+$\mathcal{B}=(\alpha,\beta]$ be one of the blocks constructed below in the
+proof of Lemma~\ref{lem:composite-successor} (so $\alpha\ge\exp y$ and the
+reciprocal-prime mass satisfies $\mu(\mathcal{B}):=\sum_{q\in\mathcal{B}}1/q
+=1+O(1/y)$). For every reduced residue class $a\bmod d$,
+\[
+\sum_{\substack{q\in\mathcal{B}\\q\equiv a\pmod d}}\frac1q
+\;=\;
+\frac{\mu(\mathcal{B})}{\varphi(d)}
+\;+\;
+O_A\!\bigl(\exp(-c\sqrt y)\bigr),
+\]
+uniformly in $d\le y$, $a\in G$, and the block $\mathcal{B}$. The same
+estimate holds with $1/q$ replaced by $1/(q-1)$. Consequently, conditional
+on the event that exactly one prime in $\mathcal{B}$ is selected, the residue
+class of that prime modulo $d$ has total variation distance
+$O(y^{-1/2})$ from the uniform distribution on $G$.
+\end{lemma}
+
+\begin{proof}
+The case $d=1$ is trivial, since $G$ has one element and the total-variation
+distance to the uniform distribution is zero. We may assume $d\ge 2$. Since
+every prime in $\mathcal B$ is $>\exp y>d$, each such prime is coprime to $d$
+and therefore defines an element of $G$.
+
+Since $d\le y\le\log\alpha$, Lemma~\ref{lem:SW} with $A_0=1$ applies
+uniformly on $(\alpha,\beta]$. By \eqref{eq:SW-reciprocal},
+\[
+\sum_{\substack{\alpha<q\le\beta\\q\equiv a\pmod d}}\frac1q
+\;=\;
+\frac1{\varphi(d)}\int_\alpha^\beta\frac{dt}{t\log t}
+\;+\;
+O\!\bigl(\exp(-c_0\sqrt{\log\alpha})\bigr).
+\]
+Since $\log\alpha\ge y$, the error is $O(\exp(-c_0\sqrt y))$. Write
+\[
+I_{\mathcal B}:=\int_\alpha^\beta\frac{dt}{t\log t}.
+\]
+For each reduced residue class $a\bmod d$ we have
+\[
+\sum_{\substack{q\in\mathcal B\\q\equiv a\pmod d}}\frac1q
+=
+\frac{I_{\mathcal B}}{\varphi(d)}
++
+O\!\bigl(\exp(-c_0\sqrt y)\bigr),
+\]
+uniformly in $d\le y$, $a$, and $\mathcal B$. Summing this estimate over all
+$a\in(\ZZ/d\ZZ)^\times$ gives
+\[
+\mu(\mathcal B)
+=
+I_{\mathcal B}
++
+O\!\bigl(\varphi(d)\exp(-c_0\sqrt y)\bigr).
+\]
+Dividing by $\varphi(d)$ and substituting back yields
+\[
+\frac{I_{\mathcal B}}{\varphi(d)}
+=
+\frac{\mu(\mathcal B)}{\varphi(d)}
++
+O\!\bigl(\exp(-c_0\sqrt y)\bigr),
+\]
+and hence
+\[
+\sum_{\substack{q\in\mathcal B\\q\equiv a\pmod d}}\frac1q
+=
+\frac{\mu(\mathcal B)}{\varphi(d)}
++
+O\!\bigl(\exp(-c_0\sqrt y)\bigr).
+\]
+After decreasing $c_0$ if necessary, this is the stated
+$O_A(\exp(-c\sqrt y))$ estimate.
+
+For the weight $1/(q-1)$, note that
+\[
+\sum_{q\in\mathcal{B}}\left|\frac1{q-1}-\frac1q\right|
+\;\ll\;
+\sum_{q>\exp y}\frac1{q^2}
+\;\ll\;
+\exp(-y),
+\]
+and the same bound holds after restricting to any residue class.
+
+Now condition on the event $\mathcal G_{\mathcal B}$ that exactly one prime in
+$\mathcal B$ is selected, and let $Q_{\mathcal B}$ denote that unique selected
+prime. For $a\in G$, we have
+\begin{align*}
+\PP(Q_{\mathcal B}\equiv a\pmod d\mid \mathcal G_{\mathcal B})
+&=
+\frac{
+\sum_{\substack{q\in\mathcal{B}\\q\equiv a\pmod d}}
+\frac1q\prod_{r\in\mathcal{B},\ r\ne q}(1-1/r)
+}{
+\sum_{q\in\mathcal{B}}
+\frac1q\prod_{r\in\mathcal{B},\ r\ne q}(1-1/r)
+}  \\
+&=
+\frac{
+\sum_{\substack{q\in\mathcal{B}\\q\equiv a\pmod d}}\frac1{q-1}
+}{
+\sum_{q\in\mathcal{B}}\frac1{q-1}
+},
+\end{align*}
+because the common factor $\prod_{r\in\mathcal B}(1-1/r)$ cancels.
+
+By the estimate just proved with the weight $1/(q-1)$, the numerator is
+\[
+\frac{\mu(\mathcal B)}{\varphi(d)}
++
+O_A\bigl(\exp(-c\sqrt y)\bigr),
+\]
+while the denominator is
+\[
+\mu(\mathcal B)+O(\exp(-y))=1+O(1/y).
+\]
+Since $\mu(\mathcal B)=1+O(1/y)$, it follows that
+\[
+\PP(Q_{\mathcal B}\equiv a\pmod d\mid \mathcal G_{\mathcal B})
+=
+\frac1{\varphi(d)}
++
+O\!\left(\frac{1}{y\varphi(d)}\right)
++
+O_A\bigl(\exp(-c\sqrt y)\bigr).
+\]
+Consequently the total-variation distance from the uniform distribution on
+$G$ is at most
+\[
+\frac12\sum_{a\in G}
+\left|
+\PP(Q_{\mathcal B}\equiv a\pmod d\mid \mathcal G_{\mathcal B})
+-\frac1{\varphi(d)}
+\right|
+\ll
+\frac1y+y\exp(-c\sqrt y)
+\ll y^{-1/2},
+\]
+for all sufficiently large $y$. \qed
+\end{proof}
+
+\begin{remark}[Uniformity under conditioning on good blocks]\label{rem:block-uniformity}
+The total-variation estimate in Lemma~\ref{lem:block-eq} is uniform in
+$d\le y$, in the reduced residue class, and in the block $\mathcal B$ among
+the blocks constructed in Lemma~\ref{lem:composite-successor}. Consequently,
+if we condition on any fixed collection of block indices being good, the unique
+selected primes in those blocks remain independent across the chosen blocks,
+and each of their residue classes modulo $d$ is still $O(y^{-1/2})$-close to
+uniform on $(\ZZ/d\ZZ)^\times$. This is because the blocks are disjoint, and
+inside a chosen block the conditioning is only the event that exactly one prime
+of that block is selected.
+
+The same conclusion holds when the block indices are chosen as the first
+$K$ good blocks. Indeed, conditioning on a realized value
+$k_1<\cdots<k_K$ of these indices imposes only the events that
+$\mathcal B_{k_i}$ is good and that certain disjoint intervening blocks are
+not good. The latter events involve no primes from the blocks
+$\mathcal B_{k_i}$, and within each $\mathcal B_{k_i}$ the only conditioning
+is that exactly one prime is selected. Therefore the unique selected primes
+from the realized good blocks remain independent, and their residue laws retain
+the same uniform $O(y^{-1/2})$ total-variation bound.
+\end{remark}
+
+\begin{lemma}\label{lem:composite-successor}
+There exist absolute constants $A>10$, $c>0$, and $y_0\ge 2$ with the following
+property. Let $y\ge y_0$ and $1\le d\le y$. Work in the independent prime model
+in which each prime $q$ is selected independently with probability $1/q$. Then,
+with probability at least $1-O(y^{-c})$, uniformly in $d\le y$, there exists a
+squarefree product $e$ of \emph{selected} primes lying entirely in
+$\bigl(\exp y,\,\exp(y^{A-1})\bigr]$, such that
+\begin{equation}\label{eq:composite-successor}
+e\equiv 1\pmod d, \qquad e>d, \qquad e\le \exp(y^A).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Set $A:=20$ (any sufficiently large constant works; the value $20$ comfortably
+satisfies all numerical thresholds below), and take $y_0$ large enough for the
+estimates below.
+
+We first dispose of the case $d=1$. In this case the congruence condition
+$e\equiv 1\pmod d$ is vacuous. By Mertens' theorem,
+\[
+\sum_{\exp y<q\le \exp(y^2)}\frac1q
+=
+\log\log(\exp(y^2))-\log\log(\exp y)+O(1/y)
+=
+\log y+O(1/y).
+\]
+Hence the probability that no prime in $(\exp y,\exp(y^2)]$ is selected is at
+most
+\[
+\exp\!\left(-\sum_{\exp y<q\le \exp(y^2)}\frac1q\right)
+=
+\exp\bigl(-\log y+O(1/y)\bigr)
+\ll y^{-1}.
+\]
+On the complementary event, any selected prime $q\in(\exp y,\exp(y^2)]$ gives
+$e=q$, which is squarefree, satisfies $e>1=d$, satisfies $e\equiv 1\pmod 1$,
+lies in $\bigl(\exp y,\exp(y^{A-1})\bigr]$, and obeys
+$e\le \exp(y^2)\le \exp(y^A)$. Thus the lemma holds for $d=1$, after decreasing
+$c$ if necessary.
+
+We may therefore assume $d\ge 2$. Write $G:=(\ZZ/d\ZZ)^\times$ and
+$N:=\varphi(d)\le d\le y$.
+
+\medskip\noindent
+\textbf{Step 1: Mertens reciprocal mass on the prime window.} By
+Lemma~\ref{lem:Mertens},
+\begin{equation}\label{eq:Mertens-window}
+\sum_{\exp y<q\le \exp(y^{A-1})}\frac{1}{q}
+\;=\; \log\log\bigl(\exp(y^{A-1})\bigr)-\log\log(\exp y)+O(1)
+\;=\; (A-2)\log y + O(1).
+\end{equation}
+
+\medskip\noindent
+\textbf{Step 2: Block decomposition.}
+Recall $A=20$. Fix $\gamma=15$ and set
+\begin{equation}\label{eq:M-blocks}
+M \;:=\; \lfloor\gamma\log y\rfloor.
+\end{equation}
+Define real endpoints $\alpha_k$ by
+\[
+\log\log \alpha_k \;=\; \log y+k-1, \qquad 1\le k\le M+1.
+\]
+Thus $\alpha_1=\exp y$, and
+\[
+\alpha_{M+1}
+\;=\;
+\exp\!\left(y\,e^M\right)
+\;\le\;
+\exp\!\left(y^{\gamma+1}\right)
+\;\le\;
+\exp(y^{A-1})
+\]
+for all large $y$, since $\gamma+1=16<A-1=19$. Let
+\[
+\mathcal B_k \;:=\; \bigl(\alpha_k,\alpha_{k+1}\bigr]
+\]
+denote the set of primes in this interval. By Mertens' theorem
+(Lemma~\ref{lem:Mertens}),
+\begin{equation}\label{eq:block-mass}
+\mu_k \;:=\; \sum_{q\in\mathcal B_k}\frac1q
+\;=\;
+\log\log\alpha_{k+1}-\log\log\alpha_k+O(1/\log\alpha_k)
+\;=\;
+1+O(1/y),
+\end{equation}
+uniformly in $k$. The total mass absorbed by the first $M$ blocks is
+$M\cdot(1+O(1/y))=\gamma\log y\cdot(1+o(1))$, which fits inside the window
+since $\gamma<A-2$.
+
+\medskip\noindent
+\textbf{Step 3: Good blocks.} Call a block $\mathcal{B}_k$ \emph{good} if exactly
+one prime in $\mathcal{B}_k$ is selected. Put
+\[
+\mu_k:=\sum_{q\in\mathcal B_k}\frac1q=1+O(1/y),
+\qquad
+\Pi_k:=\prod_{q\in\mathcal B_k}\Bigl(1-\frac1q\Bigr).
+\]
+Then
+\begin{align*}
+\PP(\mathcal B_k\text{ is good})
+&=
+\sum_{q\in\mathcal B_k}
+\frac1q\prod_{q'\in\mathcal B_k\setminus\{q\}}
+\Bigl(1-\frac1{q'}\Bigr)  \\
+&=
+\Pi_k\sum_{q\in\mathcal B_k}\frac{1/q}{1-1/q}
+=
+\Pi_k\sum_{q\in\mathcal B_k}\frac1{q-1}.
+\end{align*}
+Moreover,
+\[
+\sum_{q\in\mathcal B_k}\frac1{q-1}
+=
+\sum_{q\in\mathcal B_k}\frac1q
++
+O\!\left(\sum_{q>\exp y}\frac1{q^2}\right)
+=
+\mu_k+O(e^{-y})
+=
+1+O(1/y),
+\]
+and
+\[
+\log \Pi_k
+=
+\sum_{q\in\mathcal B_k}\log\Bigl(1-\frac1q\Bigr)
+=
+-\mu_k+O\!\left(\sum_{q>\exp y}\frac1{q^2}\right)
+=
+-1+O(1/y).
+\]
+Therefore
+\[
+\PP(\mathcal B_k\text{ is good})=e^{-1}+O(1/y).
+\]
+Hence, writing $\rho:=e^{-1}$,
+\begin{equation}\label{eq:good-block-prob}
+\PP(\mathcal{B}_k\text{ is good}) \;=\; \rho \;+\; O(1/y)
+\qquad\text{(uniformly in $k$).}
+\end{equation}
+
+The events $\{\mathcal{B}_k\text{ is good}\}$ for different $k$ depend on
+\emph{disjoint} sets of primes, so they are mutually independent.
+
+\medskip\noindent
+\textbf{Step 4: Chernoff for the number of good blocks.} Let
+$I_k$ be the indicator of the event that $\mathcal B_k$ is good, and let
+\[
+W:=\sum_{k=1}^M I_k.
+\]
+The variables $I_k$ are independent, since the blocks use disjoint sets of
+primes. By \eqref{eq:good-block-prob},
+\[
+\EE W
+=
+\sum_{k=1}^M \PP(\mathcal B_k\text{ is good})
+=
+\rho M+O(M/y)
+=
+\rho\gamma\log y+O(1).
+\]
+Choose
+\begin{equation}\label{eq:gamma-choice}
+\kappa \;:=\; \tfrac{\rho\gamma}{2}>\frac{1}{\log 2}+1,
+\qquad
+\text{i.e.\ } \gamma > 2(\rho^{-1})\!\bigl(\tfrac{1}{\log 2}+1\bigr).
+\end{equation}
+Numerically $\rho=e^{-1}\approx 0.368$, $1/\log 2\approx 1.443$, so it suffices
+to take $\gamma\ge 14$. We also require $\gamma<A-2=18$, so
+$\gamma\in[14,18)$ is admissible; we keep the choice $\gamma=15$.
+
+For all sufficiently large $y$, the threshold $\kappa\log y$ is at most
+$(2/3)\EE W$. The Chernoff bound for sums of independent Bernoulli variables
+therefore gives
+\begin{equation}\label{eq:lots-good-blocks}
+\PP\bigl(W\;<\;\kappa\log y\bigr)
+\le
+\PP\bigl(W<(2/3)\EE W\bigr)
+\le
+\exp(-\EE W/18)
+=
+O(y^{-c_1})
+\end{equation}
+for some constant $c_1=c_1(\gamma)>0$.
+The use of Chernoff here is justified by Lemma~\ref{lem:chernoff}: the
+indicators $I_k$ are independent because the prime blocks are disjoint, and
+they need not be identically distributed. The estimate uses only their
+independence and the value of $\EE W$.
+
+\medskip\noindent
+\textbf{Step 5: Conditional residue distribution.} Put
+\[
+K:=\lceil \kappa\log y\rceil.
+\]
+On the event $W\ge K$, let
+\[
+k_1<k_2<\cdots<k_K
+\]
+be the first $K$ indices for which $\mathcal B_{k_i}$ is good. From each good
+block $\mathcal B_{k_i}$ we extract the unique selected prime $q_{k_i}$, which
+lies in $\mathcal B_{k_i}\subset(\exp y,\exp(y^{A-1})]$, hence
+$q_{k_i}\bmod d\in G$.
+
+The important point is that the random indices $k_1,\dots,k_K$ are determined
+only by the good/block indicators, i.e. by the events ``exactly one prime is
+selected in $\mathcal B_k$''. They are not determined by the residue classes of
+the unique selected primes. More formally, condition on any possible value of
+the index vector $(k_1,\dots,k_K)$. Since the blocks are disjoint, the selected
+prime in each conditioned-good block is independent of the selected primes in
+the other conditioned-good blocks, and the law inside each such block is the
+law of the unique selected prime conditional on that block being good.
+
+Equivalently, if $C_1,\ldots,C_K$ are arbitrary subsets of $G$, then on
+conditioning on the event that the first $K$ good block indices are precisely
+$k_1<\cdots<k_K$, independence of the disjoint prime blocks gives
+\[
+ \PP\bigl(q_{k_i}\bmod d\in C_i\ (1\le i\le K)\mid k_1,\ldots,k_K\bigr)
+ =
+ \prod_{i=1}^K
+ \PP\bigl(q_{k_i}\bmod d\in C_i\mid \mathcal B_{k_i}\text{ is good}\bigr).
+\]
+The information that the intervening blocks are not good concerns only those
+intervening blocks and therefore does not affect the conditional distribution
+inside the good blocks $\mathcal B_{k_i}$.
+
+By Lemma~\ref{lem:block-eq}, for each $i$ this conditional residue distribution
+is $O(y^{-1/2})$-close in total variation to the uniform distribution on
+$G=(\ZZ/d\ZZ)^\times$, uniformly in the realized index $k_i$. Thus, conditional
+on the realized index vector, the residues
+\[
+g_i:=q_{k_i}\bmod d\qquad (1\le i\le K)
+\]
+are independent and each is $\eps_y$-close to uniform on $G$, where
+\[
+\eps_y:=O(y^{-1/2}).
+\]
+This conclusion is uniform over the conditioned index vector
+$(k_1,\dots,k_K)$ by Remark~\ref{rem:block-uniformity}.
+
+\medskip\noindent
+\textbf{Step 6: Apply the subset-product lemma.}
+The following estimate is first taken conditional on the event $W\ge K$ and on
+an arbitrary realized index vector $k_1<\cdots<k_K$ for the first $K$ good
+blocks. By the preceding step and Remark~\ref{rem:block-uniformity}, under this
+conditioning the residues
+\[
+   g_i:=q_{k_i}\bmod d \qquad (1\le i\le K)
+\]
+are independent and each has total-variation distance $O(y^{-1/2})$ from the
+uniform distribution on $G$. The bound obtained below is uniform in the realized
+index vector, so it remains valid after averaging over the possible realized
+vectors.
+
+With Lemma~\ref{lem:subset-product} (and Remark~\ref{rem:near-uniform}) applied
+to the $K$ residues $g_i:=q_{k_i}\bmod d\in G$,
+\begin{align}
+\PP\bigl(\nexists\,\emptyset\ne S\subseteq[K]:\;\textstyle\prod_{i\in S}g_i=1_G\bigr)
+&\le \frac{N}{2^K-1} + K\eps_y\nonumber\\
+&\le \frac{y}{2^{\kappa\log y - 1}} + O\bigl((\log y)y^{-1/2}\bigr)\nonumber\\
+&= y^{1-\kappa\log 2}\cdot 2 + O\bigl(y^{-1/2}(\log y)\bigr)\nonumber\\
+&= O(y^{-c_2}), \label{eq:subset-prob}
+\end{align}
+The estimate above is conditional on the event $W\ge K$ and on any fixed
+realization of the first $K$ good block indices. Since the bound is uniform in
+that realization, averaging over the possible index vectors preserves the same
+bound.
+where one may take
+\[
+c_2=\min\bigl(\kappa\log 2-1,\,\tfrac13\bigr)>0
+\]
+by \eqref{eq:gamma-choice}, since
+$(\log y)y^{-1/2}=O(y^{-1/3})$.
+
+\medskip\noindent
+\textbf{Step 7: Putting it together.} Combining Steps 4 and 6,
+\begin{equation}\label{eq:total-prob}
+\PP(\text{no such product $e$ exists}) \;\le\; O(y^{-c_1})+O(y^{-c_2})\;=\;O(y^{-c}),
+\qquad c:=\min(c_1,c_2)>0.
+\end{equation}
+
+When the construction succeeds, the resulting product
+$e=\prod_{i\in S}q_{k_i}$ uses at most $K=\lceil\kappa\log y\rceil$ primes.
+Since $\kappa=\rho\gamma/2<\gamma$ and $y$ is large, we have
+$K\le \gamma\log y$. Each prime factor is at most $\exp(y^{A-1})$, so
+\begin{equation}\label{eq:e-size}
+\log e
+\;\le\;
+\sum_{i\in S}\log q_{k_i}
+\;\le\;
+K\cdot y^{A-1}
+\;\le\;
+\gamma(\log y)\cdot y^{A-1}
+\;\le\;
+y^A,
+\end{equation}
+since $(\log y)\le y$ for $y\ge 1$. Also $e>\exp y>y\ge d$ since $S\ne\emptyset$
+and each prime in the product exceeds $\exp y$. The product is squarefree
+because the primes $q_{k_i}$ in distinct good blocks are distinct (the blocks
+are disjoint). Finally $e\equiv 1\pmod d$ by the subset-product condition.
+Hence $e$ satisfies \eqref{eq:composite-successor}. \qed
+\end{proof}
+
+\section{Lower bound for $H(n)$}\label{sec:lower-H}
+
+We now prove the missing matching lower bound:
+
+\begin{theorem}\label{thm:lower-H}
+For all but $o(x)$ integers $n\le x$,
+\begin{equation}\label{eq:thm-lower-H}
+H(n) \;\ge\; \bigl(1 - o(1)\bigr)\logstar x.
+\end{equation}
+\end{theorem}
+
+\subsection{Tower scale for $H$}
+
+Throughout this section we again write
+\[
+   L:=\logstar x.
+\]
+
+Let $A>10$ be the constant from Lemma~\ref{lem:composite-successor}, and choose
+\begin{equation}\label{eq:B-choice}
+B \;:=\; A+10.
+\end{equation}
+Set
+\begin{equation}\label{eq:m0-mj-H}
+m_0 \;:=\; \lfloor L^{1/2}\rfloor, \qquad y_j \;:=\; \exp\!\Bigl(\tfrac{T_{m_0+j-1}}{B}\Bigr) \quad (j\ge 1),
+\end{equation}
+and
+\begin{equation}\label{eq:R-H}
+R \;:=\; L - m_0 - 4.
+\end{equation}
+Note that $R = L - O(L^{1/2}) = (1-o(1))L$.
+
+\begin{lemma}[Scale property for $H$]\label{lem:scale-H}
+For all sufficiently large $L$ and all $1\le j\le R$,
+\begin{equation}\label{eq:scale-H}
+\exp(y_j^A) \;\le\; y_{j+1}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Set $m:=m_0+j-1$. Then
+\[
+y_j=\exp(T_m/B),\qquad y_{j+1}=\exp(T_{m+1}/B).
+\]
+The desired inequality is equivalent to
+\[
+y_j^A \;\le\; \log y_{j+1}=\frac{T_{m+1}}{B},
+\]
+or, since $T_{m+1}=\exp(T_m)$,
+\[
+\exp\!\Bigl(\frac{A T_m}{B}\Bigr)
+\;\le\;
+\frac{\exp(T_m)}{B}.
+\]
+Taking logarithms, this is
+\[
+\frac{A T_m}{B} \;\le\; T_m-\log B,
+\]
+equivalently
+\[
+T_m\Bigl(1-\frac{A}{B}\Bigr)\;\ge\; \log B.
+\]
+Because $B=A+10$, we have $1-A/B=10/B>0$. Also $m\ge m_0$ for every
+$1\le j\le R$, and $m_0=\lfloor L^{1/2}\rfloor\to\infty$. Hence
+$T_m\to\infty$ uniformly in $1\le j\le R$, so the displayed inequality holds
+for all sufficiently large $L$. \qed
+\end{proof}
+
+\subsection{The greedy chain construction in the product model}
+
+\begin{lemma}\label{lem:greedy-H}
+Work in the independent prime model on primes $r$ up to $\exp(y_R^{A-1})$. Then with probability $1-o(1)$, there is a chain of integers
+\begin{equation}\label{eq:H-chain}
+1=d_1<d_2<\cdots<d_{R+1}, \qquad d_{j+1}\equiv 1\pmod{d_j},\qquad d_{j+1}\le y_{j+1},
+\end{equation}
+such that each $d_j$ ($j\ge 2$) is a squarefree product of selected primes lying in the disjoint windows $\bigl(\exp y_{j-1},\exp(y_{j-1}^{A-1})\bigr]$.
+\end{lemma}
+
+\begin{proof}
+We construct the chain recursively and make deterministic choices. Set
+$d_1:=1$. Suppose that $d_j$ has already been constructed, $d_j\le y_j$, and
+$d_j$ is determined by the selections in the earlier windows $W_1,\dots,W_{j-1}$.
+
+At stage $j$, use only primes in the fresh window
+\begin{equation}\label{eq:windowj}
+W_j \;:=\; \bigl(\exp y_j,\,\exp(y_j^{A-1})\bigr].
+\end{equation}
+Call a squarefree product $e$ \emph{admissible at stage $j$} if all its prime
+factors are selected primes from $W_j$ and
+\[
+e\equiv 1\!\pmod{d_j},\qquad e>d_j,\qquad e\le \exp(y_j^A).
+\]
+If at least one admissible $e$ exists, define $d_{j+1}$ to be the least such
+admissible integer; otherwise the construction fails at stage $j$.
+
+At this point $d_j$ is measurable with respect to the selections in the earlier
+windows $W_1,\dots,W_{j-1}$. The fresh window $W_j$ is disjoint from all earlier
+windows, so conditional on the past and on the realized value of $d_j$, the
+selection variables for primes in $W_j$ still have the independent Bernoulli
+law required by Lemma~\ref{lem:composite-successor}. Since $d_j\le y_j$ and
+Lemma~\ref{lem:composite-successor} is uniform for all $1\le d\le y_j$, it gives
+\[
+\PP(\text{stage $j$ fails}\mid\text{past})\;\ll\; y_j^{-c}.
+\]
+The deterministic choice of the least admissible $e$ ensures that $d_{j+1}$ is
+measurable with respect to the selections in $W_1,\dots,W_j$.
+
+On success, Lemma~\ref{lem:composite-successor} guarantees
+\[
+d_{j+1}\equiv 1\!\pmod{d_j},\qquad d_{j+1}>d_j,\qquad d_{j+1}\le\exp(y_j^A).
+\]
+By Lemma~\ref{lem:scale-H}, valid for every $1\le j\le R$,
+$\exp(y_j^A)\le y_{j+1}$, so $d_{j+1}\le y_{j+1}$.
+
+The windows $W_1,W_2,\dots,W_R$ are pairwise disjoint. Indeed,
+Lemma~\ref{lem:scale-H} gives $y_{j+1}\ge\exp(y_j^A)>y_j^{A-1}$, hence
+$\exp(y_j^{A-1})<\exp(y_{j+1})$, so the upper endpoint of $W_j$ lies below
+the lower endpoint of $W_{j+1}$. Thus the primes used at stage $j$ are
+independent of all previous choices.
+
+Let $\mathcal F_j$ be the event that stage $j$ fails, and let
+$\mathcal S_{j-1}$ be the event that all previous stages have succeeded.
+The estimate above gives, uniformly in the realized past on $\mathcal S_{j-1}$,
+\[
+   \PP(\mathcal F_j\mid \text{past}) \ll y_j^{-c}.
+\]
+Therefore
+\[
+\PP(\mathcal F_j\cap \mathcal S_{j-1})
+=
+\EE\!\left[
+   \mathbf 1_{\mathcal S_{j-1}}
+   \PP(\mathcal F_j\mid \text{past})
+\right]
+\ll y_j^{-c}.
+\]
+Thus summing over $j$ is legitimate even though the modulus $d_j$ is random and
+depends on the earlier stages.
+
+Finally, by the union bound,
+\begin{equation}\label{eq:greedy-H-bound}
+\PP(\text{some stage fails})
+\;\le\;
+\sum_{j=1}^R O(y_j^{-c}).
+\end{equation}
+For all sufficiently large $L$, the sequence $y_j$ grows at least
+quadratically: $y_{j+1}\ge y_j^2$. Hence
+\[
+\sum_{j=1}^R y_j^{-c}
+\;\le\;
+\sum_{j\ge 1} y_1^{-c\,2^{j-1}}
+\;\le\;
+2\,y_1^{-c}
+\;=\;
+o(1),
+\]
+because $y_1=\exp(T_{m_0}/B)\to\infty$. Therefore the construction succeeds
+with probability $1-o(1)$. \qed
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:lower-H}}
+
+The construction in Lemma~\ref{lem:greedy-H} only uses primes up to
+\begin{equation}\label{eq:P-def-H}
+P \;:=\; \exp\bigl(y_R^{A-1}\bigr)
+\;=\; \exp\!\Bigl(\exp\!\Bigl(\tfrac{(A-1)T_{m_0+R-1}}{B}\Bigr)\Bigr).
+\end{equation}
+Now $m_0+R-1=L-5$, so
+\[
+   \log\log P=\frac{(A-1)T_{L-5}}{B}.
+\]
+Since $B=A+10$, we have $(A-1)/B<1$. Hence, for all sufficiently large $L$,
+\begin{equation}\label{eq:P-bound1}
+   \log\log P
+   =
+   \frac{(A-1)T_{L-5}}{B}
+   <
+   T_{L-5}.
+\end{equation}
+Exponentiating twice gives
+\[
+   \log P<T_{L-4}, \qquad P<T_{L-3}.
+\]
+By \eqref{eq:logx-vs-T}, $\log x>T_{L-2}\gg T_{L-3}$, so
+\begin{equation}\label{eq:P-bound2}
+P \;\le\; T_{L-3}\;=\;o(\log x).
+\end{equation}
+
+Set $M:=\prod_{p\le P}p$. By Chebyshev (Lemma~\ref{lem:Cheb}),
+$\log M\le C_\theta P=o(\log x)$, hence $M=x^{o(1)}=o(x)$.
+
+We also record explicitly that the constructed divisors lie below $x$. For
+$1\le j\le R$,
+\[
+d_{j+1}\le y_{j+1}\le y_{R+1}
+=
+\exp\!\Bigl(\frac{T_{m_0+R}}{B}\Bigr)
+=
+\exp\!\Bigl(\frac{T_{L-4}}{B}\Bigr)
+<
+T_{L-3}
+<
+T_{L-2}
+<
+\log x
+<
+x
+\]
+for all sufficiently large $L$, using \eqref{eq:logx-vs-T}. Combined with
+Remark~\ref{rem:CRT-products}, this shows that after CRT transfer each
+constructed $d_j$ is a genuine divisor of the realized integer $n\le x$, not
+merely a formal product in the independent model.
+
+The event ``the greedy chain $\mathcal{C}_H$ of Lemma~\ref{lem:greedy-H} exists''
+depends only on which primes $p\le P$ divide $n$. More explicitly, every window
+$W_j$ used in the construction lies below $P$, every admissible divisor
+$d_{j+1}$ is a squarefree product of selected primes from such a window, and the
+rule choosing the least admissible product is deterministic once the indicators
+$\bigl(\mathbf 1_{p\mid n}\bigr)_{p\le P}$ are known. No information about primes
+above $P$, and no information about higher powers of primes, is used.
+
+Although the event is phrased in terms of the existence of admissible
+squarefree products, it is a finite event once the cutoff $P$ is fixed: each
+window $W_j$ contains only primes $\le P$, and the admissible products are
+subsets of this finite set of primes. The deterministic rule choosing the least
+admissible product therefore makes the entire construction a well-defined
+function of the finite vector
+$\bigl(\mathbf 1_{p\mid n}\bigr)_{p\le P}$.
+
+Hence by
+Lemma~\ref{lem:CRT} its density among $n\le x$ equals
+$\PP_{\mathrm{prod}}(\mathcal{C}_H)+O(M/x)=1-o(1)$.
+Whenever $\mathcal{C}_H$ holds, the constructed divisors
+\[
+1=d_1<d_2<\cdots<d_{R+1}
+\]
+all divide $n$ and satisfy $d_{j+1}\equiv 1\pmod{d_j}$. Thus $H(n)\ge R+1$,
+and in particular
+\[
+H(n)\;\ge\; R\;=\;(1-o(1))L.
+\]
+This proves \eqref{eq:thm-lower-H}. \qed
+
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof-of-main}
+
+Combine Theorems~\ref{thm:upper-H},~\ref{thm:upper-h},
+\ref{thm:lower-h}, and~\ref{thm:lower-H}. Thus, with $L:=\logstar x$, for all
+but $o(x)$ integers $n\le x$,
+\begin{align}
+\bigl(\tfrac12-o(1)\bigr)L
+\;\le\;
+h(n)
+&\;\le\;
+\bigl(\tfrac12+o(1)\bigr)L,
+\label{eq:h-L-bounds}\\
+\bigl(1-o(1)\bigr)L
+\;\le\;
+H(n)
+&\;\le\;
+\bigl(1+o(1)\bigr)L.
+\label{eq:H-L-bounds}
+\end{align}
+Here and below we have intersected the four density-one sets supplied by those
+theorems; the union of their exceptional sets still has size $o(x)$.
+
+It remains to replace $L=\logstar x$ by $\logstar n$. We first record a
+uniform comparison on the interval $[x^{1/2},x]$. Since $\logstar x=L$, we
+have
+\[
+T_{L-1}<x\le T_L
+\]
+for $L\ge 1$. Hence, for $n\in[x^{1/2},x]$,
+\[
+n\;\le\; x\;\le\; T_L,
+\]
+so $\logstar n\le L$. Also
+\[
+n \;\ge\; x^{1/2} \;>\; T_{L-1}^{1/2} \;=\; \exp(T_{L-2}/2).
+\]
+For all sufficiently large $L$, $\exp(T_{L-2}/2)>T_{L-2}$. Therefore $n>T_{L-2}$,
+and so $\logstar n\ge L-1$. Consequently,
+\begin{equation}\label{eq:logstar-comparison}
+\logstar n=L+O(1)
+\end{equation}
+uniformly for $n\in[x^{1/2},x]$.
+
+This comparison is uniform on $[x^{1/2},x]$. Hence any estimate of the form
+$A(n)=cL+o(L)$ holding outside an exceptional set of size $o(x)$ may be
+rewritten on the same density-one set, after discarding $n\le x^{1/2}$, as
+\[
+   A(n)=\bigl(c+o(1)\bigr)\logstar n,
+\]
+with the same constant $c$.
+
+The integers $n\le x^{1/2}$ form an exceptional set of size $O(x^{1/2})=o(x)$.
+Discarding them, \eqref{eq:logstar-comparison} gives
+\[
+L=(1+o(1))\logstar n
+\]
+uniformly on the remaining density-one set. Substituting into
+\eqref{eq:h-L-bounds} and \eqref{eq:H-L-bounds} yields
+\[
+h(n)=\Bigl(\tfrac12+o(1)\Bigr)\logstar n,
+\qquad
+H(n)=\bigl(1+o(1)\bigr)\logstar n
+\]
+for all but $o(x)$ integers $n\le x$. Finally,
+\[
+\frac{H(n)}{h(n)}
+\;=\;
+\frac{\bigl(1+o(1)\bigr)\logstar n}
+{\bigl(\tfrac12+o(1)\bigr)\logstar n}
+\;=\;
+2+o(1),
+\]
+because the lower bound for $h(n)$ ensures $h(n)\to\infty$ on the same
+density-one set. This proves \eqref{eq:h-normal}--\eqref{eq:ratio}. \qed
+
+\section{Concluding remarks}\label{sec:remarks}
+
+\subsection{What is and is not proven} We have proven the
+\emph{normal orders} of $h(n)$ and $H(n)$, i.e.\ asymptotic statements about a
+density-one set of $n$. Theorem~\ref{thm:main} does \emph{not} assert that
+$h(n)\le (\tfrac12+o(1))\logstar n$ pointwise, nor that $H(n)\ge (1-o(1))\logstar n$
+pointwise; both pointwise statements are easily seen to fail (e.g.\ for $n$ a
+product of a long prime chain $p_1\equiv 1\pmod{p_0}, p_2\equiv 1\pmod{p_1},\dots$).
+Erd\H{o}s' original belief that $h(n)$ has a normal order $\logstar n$ is
+\emph{at least partially} correct: we get $\Theta(\logstar n)$ with the precise
+constant $1/2$.
+
+\subsection{Sharpness of the second-order term} Our bounds carry an additive
+slack of order $L^{1/2}$, where $L=\logstar x$, coming from the small-prime
+cutoff $Y=\lfloor L^{1/2}\rfloor$. After replacing $L$ by $\logstar n$ on the
+final density-one set, this is an additive
+$O((\logstar n)^{1/2})$ slack. The truth is presumably
+$h(n)=\tfrac12\logstar n+O(\log\logstar n)$ a.a., but proving this would require
+a finer treatment of bad pairs at moderate scales. We have not attempted it
+here.
+
+\subsection{Convergence in probability}
+The methods of Sections~\ref{sec:lower-h} and~\ref{sec:lower-H}, together with
+the upper bounds, show convergence in probability:
+\[
+\frac{h(n)}{\logstar n}\to \frac12,
+\qquad
+\frac{H(n)}{\logstar n}\to 1
+\]
+with respect to natural density. We do not claim $L^p$-convergence here; that
+would require additional uniform-integrability estimates beyond the arguments
+of this paper.
+
+\subsection{Why the constant is $1/2$ and not, say, $1$}
+The factor of $2$ between the prime-chain and divisor-chain rates comes from
+the fact that two prime steps are needed to pass through one full ``$U$-tower''
+level, while one divisor step suffices. The bad-pair analysis is perfectly
+parallel for $h$ and $H$, but the cost-per-step asymmetry --- which can be
+traced to the
+Brun--Titchmarsh-controlled scale $Q(p)=\exp\bigl(\exp\bigl(p/(\log p)^2\bigr)\bigr)$
+versus the pure exponential scale $\exp\sqrt d$ --- forces the factor of $2$.
+
+\subsection{Possible refinements}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item \emph{Sharper constants in second order.} One can probably push the
+additive $O(L^{1/2})$ error in \eqref{eq:h-final-bound}, equivalently
+$O((\logstar n)^{1/2})$ on the final density-one set, down to
+$O(\log\logstar n)$ by being more careful with the bad-pair tail. We have not
+explored this.
+\item \emph{Distributional questions.} It is natural to ask whether, after
+centering and normalizing,
+$\bigl(h(n)-\tfrac12\logstar n\bigr)$ has a limiting distribution. This appears
+to be a substantially harder question: the prime-chain construction in
+Section~\ref{sec:lower-h} is essentially a renewal process, but the
+Siegel--Walfisz error term is too crude to give a CLT directly.
+\item \emph{Worst-case bounds.} The pointwise extremal problem is quite
+different from the normal-order problem considered here. For instance, if
+$n=\operatorname{lcm}(1,2,\ldots,k)$, then
+\[
+   1<2<3<\cdots<k
+\]
+is a valid divisor chain, since $j+1\equiv 1\pmod j$, and therefore
+$H(n)\ge k$ while $\log n\sim k$ by the prime number theorem in the form
+$\log\operatorname{lcm}(1,\ldots,k)\sim k$. Similarly, special integers built
+from long prime chains can make $h(n)$ much larger than its normal order.
+These pointwise phenomena are far from the density-one behavior proved here.
+\end{enumerate}
+
+\begin{thebibliography}{99}
+\bibitem[Dav]{Davenport}
+H. Davenport, \emph{Multiplicative Number Theory},
+Graduate Texts in Mathematics \textbf{74}, 3rd edition revised by H.~L.~Montgomery,
+Springer-Verlag, New York, 2000.
+
+\bibitem[EGPS90]{EGPS1990}
+P. Erd\H{o}s, A. Granville, C. Pomerance and C. Spiro,
+\emph{On the normal behavior of the iterates of some arithmetic functions},
+in \emph{Analytic Number Theory} (Allerton Park, IL, 1989),
+Progress in Mathematics \textbf{85}, Birkh\"auser Boston, MA, 1990, pp.~165--204.
+
+\bibitem[FKL10]{FKL2010}
+K. Ford, S.~V. Konyagin and F. Luca,
+\emph{Prime chains and Pratt trees},
+Geometric and Functional Analysis \textbf{20} (2010), 1231--1258.
+
+\bibitem[Erd]{ErdosProblems696}
+The Erd\H{o}s Problems Database, problem \#696,
+\url{https://erdosproblems.com/696} (consulted 2026-04-26).
+
+\bibitem[HW]{HardyWright}
+G.~H. Hardy and E.~M. Wright,
+\emph{An Introduction to the Theory of Numbers},
+6th edition, edited by D.~R.~Heath-Brown and J.~H.~Silverman,
+Oxford University Press, Oxford, 2008.
+
+\bibitem[IK]{IwaniecKowalski}
+H. Iwaniec and E. Kowalski,
+\emph{Analytic Number Theory},
+American Mathematical Society Colloquium Publications \textbf{53},
+American Mathematical Society, Providence, RI, 2004.
+
+\bibitem[MV]{MontgomeryVaughan}
+H.~L. Montgomery and R.~C. Vaughan,
+\emph{The large sieve},
+Mathematika \textbf{20} (1973), 119--134.
+
+\bibitem[Mer]{Mertens-orig}
+F. Mertens,
+\emph{Ein Beitrag zur analytischen Zahlentheorie},
+J. Reine Angew. Math. \textbf{78} (1874), 46--62.
+
+\bibitem[SW]{SiegelWalfisz}
+A. Walfisz,
+\emph{Zur additiven Zahlentheorie. II},
+Math. Z. \textbf{40} (1936), 592--607.
+
+\end{thebibliography}
+
+\end{document}

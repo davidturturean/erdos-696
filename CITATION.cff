@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you reference this work, please cite as below."
+title: "Normal orders of the Erdős chain functions h(n) and H(n)"
+authors:
+  - family-names: "Turturean"
+    given-names: "David"
+    affiliation: "Massachusetts Institute of Technology"
+    email: "davidct@mit.edu"
+date-released: 2026-04-26
+license: Apache-2.0
+repository-code: "https://github.com/davidturturean/erdos-696"
+abstract: >-
+  We resolve Erdős Problem #696 on the normal orders of the chain functions
+  h(n) and H(n), proving that h(n) = (1/2 + o(1)) log_* n and
+  H(n) = (1 + o(1)) log_* n for almost all n, so that H(n)/h(n) → 2 a.a.
+  This contradicts Erdős's conjectured H(n)/h(n) → ∞ on a density-one set.
+  The repository contains both the LaTeX manuscript and a Lean 4 formalization
+  (~19,200 LOC, 0 sorries) compiling against Mathlib v4.28.0.
+keywords:
+  - "Erdős problem"
+  - "number theory"
+  - "divisor chains"
+  - "Lean 4"
+  - "formal verification"
+  - "Mathlib"

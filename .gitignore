@@ -1,0 +1,57 @@
+## macOS
+.DS_Store
+
+## Lake / Lean build
+.lake/
+.cache/
+build/
+lakefile.olean
+*.olean
+
+## Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+## TeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.fmt
+*.fot
+*-blx.aux
+*-blx.bib
+.*.lb
+
+## Editor
+.idea/
+.vscode/
+*~
+\#*#
+
+## Project-specific
+*.backup*
+CLOSURE_PLAN*.md
+SWARM_*.md
+AGENT_*.md
+LITERATURE_AUDIT.md
+NUMERICAL_FINDINGS.md
+REFEREE_CRITIQUE.md
+mega_prompt.md
+LEAN_BLUEPRINT.md
+turn_*.md
+archive/
+archives/
+lean_snapshot_*/
+.backups/
