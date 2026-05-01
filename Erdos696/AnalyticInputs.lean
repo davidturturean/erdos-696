@@ -63,14 +63,6 @@ theorem (Davenport §21) about exceptional zeros `β₁` of real
 non-principal characters; Davenport §22 paragraph 1 explicitly says
 "By appealing to Siegel's theorem we can obtain a better approximation".
 
-**Strength actually used by the paper:** the exp(−c √log) error rate
-is *not* essential to the proof of the main theorem.  The paper's
-Remark "Amount of Siegel-Walfisz actually needed" (paper §2 just after
-this lemma) explicitly states that any error of the form
-`O_{A,B}((log X)^{-B})` for one fixed large `B` (in fact `B ≥ 3`)
-suffices for all later applications.  The stronger exponential form
-is axiomatized here only "to keep the notation clean" (paper's words).
-
 This is unconditional (does not assume GRH). -/
 axiom siegel_walfisz :
     ∀ A : ℝ, 0 < A →

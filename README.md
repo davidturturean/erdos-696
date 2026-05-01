@@ -96,8 +96,6 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
     |π(t; q, a) - Li(t)/φ(q)| ≤ C · t · exp(-c · √(log t))
 ```
 
-**Strength actually used by the proof:** the `exp(-c √log)` rate is *not* essential. Paper §2 (Remark "Amount of Siegel-Walfisz actually needed") explicitly states that any error of the form `O_{A,B}((log X)^{-B})` for some fixed large `B ≥ 3` suffices for all later applications. The stronger exponential form is axiomatized "to keep the notation clean" (paper's words). A weaker axiom would suffice; the strong form is standard textbook.
-
 #### 2. `brun_titchmarsh` (Iwaniec-Kowalski Theorem 6.6)
 
 > *For `(a, q) = 1` and `1 ≤ q < y`,*
