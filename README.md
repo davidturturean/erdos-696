@@ -79,9 +79,9 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 
 | Axiom | Paper § | Reference |
 |---|---|---|
-| `siegel_walfisz` | Lemma 2.1 | Davenport, *Multiplicative Number Theory*, GTM 74, **Ch. 22 eq. (4)** (verified vs. 2nd ed. rev. Montgomery; identical in 3rd ed.) |
+| `siegel_walfisz` | Lemma 2.1 | Davenport, *Multiplicative Number Theory*, GTM 74, 2nd ed. (rev. Montgomery, 1980; ISBN 978-1-4757-5927-3), **Ch. 22 eq. (4)** (verified directly) |
 | `brun_titchmarsh` | Lemma 2.2 | Iwaniec-Kowalski, *Analytic Number Theory*, AMS Colloquium Publ. 53, **Theorem 6.6** |
-| `mertens` | Lemma 2.3 | Hardy-Wright, *Introduction to the Theory of Numbers*, 6th ed., **Theorem 427** (also Tenenbaum, *Introduction to Analytic and Probabilistic NT*, Thm. I.1.11) |
+| `mertens` | Lemma 2.3 | F. Mertens, *Ein Beitrag zur analytischen Zahlentheorie*, **J. reine angew. Math. 78 (1874), 46–62** (verified directly against Göttingen GDZ PPN243919689_0078); also Hardy-Wright, *Introduction to the Theory of Numbers*, 6th ed., **Theorem 427** (weaker `o(1)` form) |
 
 #### 1. `siegel_walfisz` — Davenport §22 eq. (4)
 
@@ -108,10 +108,17 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
   π(t; q, a) ≤ C_BT · t / (φ(q) · log(t/q))
 ```
 
-#### 3. `mertens` — Hardy-Wright Theorem 427
+#### 3. `mertens` — Mertens' second theorem (1874)
 
-> *There is an absolute constant `M ∈ ℝ` (Mertens' constant, `M ≈ 0.2614972…`) such that, for all `t ≥ 2`,*
+**Verified directly** against Mertens' 1874 paper (Göttingen GDZ digitized scan, PPN243919689_0078, pp. 46–62):
+
+- p. 54 eq. (17): Mertens computes the constant `𝔆 − H = lim_{G→∞} {∑_{q=2}^{G} 1/q − log log G} = 0.2614972128` (matches modern Meissel–Mertens constant `M ≈ 0.2614972128…`).
+- p. 56: Mertens proves the explicit bound `|ε|, |ε'| ≤ (2+C)/log(G+1) + 1/(G·log G)`, asymptotically `O(1/log G)`.
+
+> *There is an absolute constant `M ∈ ℝ` (the Meissel–Mertens constant, `M ≈ 0.2614972128…`) such that, for all `t ≥ 2`,*
 > $$\sum_{p \le t,\, p\text{ prime}} \frac{1}{p} \;=\; \log\log t + M + O\!\bigl(1/\log t\bigr).$$
+
+**Note on Hardy-Wright:** Hardy-Wright Theorem 427 (verified directly here against the 2008 OUP edition) states only the weaker `o(1)` form. The explicit `O(1/log t)` rate is from Mertens' original 1874 paper, not from HW Thm 427.
 
 **Lean form**:
 ```lean

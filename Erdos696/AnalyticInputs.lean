@@ -39,10 +39,15 @@ noncomputable def li (t : ℝ) : ℝ :=
   ∫ u in (2 : ℝ)..t, 1 / Real.log u
 
 /--
-**Siegel–Walfisz theorem** (Lemma 2.1 in the paper, classical reference
-Davenport, *Multiplicative Number Theory* (GTM 74), Ch. 22 — verified
-against 2nd edition revised by Montgomery; the 3rd edition cited in the
-paper bibliography contains the identical statement).
+**Siegel–Walfisz theorem** (Lemma 2.1 in the paper).
+
+**Reference status — verified directly:**
+The paper bibliography cites Davenport, *Multiplicative Number Theory*
+(GTM 74), 2nd edition revised by H. L. Montgomery, Springer-Verlag,
+Berlin Heidelberg, 1980 (ISBN 978-1-4757-5927-3 eBook).  *Verified
+directly here* against that edition: Chapter 22 ("The Prime Number
+Theorem for Arithmetic Progressions (II)") equation (4) on page 133
+states the ψ-form Siegel–Walfisz statement quoted below.
 
 **Textbook statement (Davenport §22, eq. (4) — ψ form):**
 > Let `N` be any positive constant.  Then there exists a positive number
@@ -50,11 +55,13 @@ paper bibliography contains the identical statement).
 >     ψ(x; q, a) = x/φ(q) + O{x exp[−C₃(N)(log x)^{1/2}]}
 > uniformly in `q`, for every `(a, q) = 1`.
 
-The π-form (this axiom) follows by partial summation (Davenport p.133):
-the main term `x/φ(q)` becomes `Li(x)/φ(q)` and the error term keeps the
-same exp(−c √log) shape.  The exp(−c √log x) bound is the strongest
-unconditional rate currently known, due to a Siegel-type analysis of
-exceptional zeros of Dirichlet `L`-functions.
+The π-form (this axiom) follows by partial summation (Davenport p.133
+explicitly states the partial-summation reduction): the main term
+`x/φ(q)` becomes `Li(x)/φ(q)` and the error term keeps the same
+exp(−c √log) shape.  The exp(−c √log x) bound rests on Siegel's
+theorem (Davenport §21) about exceptional zeros `β₁` of real
+non-principal characters; Davenport §22 paragraph 1 explicitly says
+"By appealing to Siegel's theorem we can obtain a better approximation".
 
 This is unconditional (does not assume GRH). -/
 axiom siegel_walfisz :
@@ -91,23 +98,33 @@ axiom brun_titchmarsh :
               CBT * t / ((q.totient : ℝ) * Real.log (t / q))
 
 /--
-**Mertens' theorem with explicit error** (Lemma 2.3 in the paper,
-classical reference Hardy–Wright, *An Introduction to the Theory of
-Numbers*, 6th ed. (revised by Heath-Brown and Silverman), OUP 2008,
-Theorem 427; also Tenenbaum, *Introduction to Analytic and Probabilistic
-Number Theory*, 3rd ed., Ch. I.1, Theorem 11).
+**Mertens' theorem with explicit error** (Lemma 2.3 in the paper).
 
-**Textbook statement:**
-> There is an absolute constant `M ∈ ℝ` (Mertens' constant,
-> `M ≈ 0.2614972…`) such that, for all `t ≥ 2`,
+**Statement of the axiom:**
+> There is an absolute constant `M ∈ ℝ` (the Meissel–Mertens constant,
+> `M ≈ 0.2614972128…`) such that, for all `t ≥ 2`,
 >     ∑_{p ≤ t, p prime} 1/p = log log t + M + O(1/log t).
 
-The leading term `log log t` matches the heuristic 1/p prime density and
-the explicit `O(1/log t)` error rate is a consequence of Mertens' first
-theorem `∑_{p ≤ t} (log p)/p = log t + O(1)` plus Abel partial summation.
-Proof outline: combine `chebyshev_theta` (Lemma 2.4, formally proved
-below) with partial summation; the residual constant `M` is computable
-to arbitrary precision.
+**Reference status — verified directly against primary sources:**
+
+* **Mertens, *Ein Beitrag zur analytischen Zahlentheorie*, J. reine
+  angew. Math. 78 (1874), 46–62** (`Mertens-orig` in the paper
+  bibliography).  Verified here against the Göttingen GDZ digitized
+  copy (PURL: PPN243919689_0078), pages 46–62.  Mertens' equation
+  (17), p. 54, computes
+       𝔆 − H = lim_{G→∞} {∑_{q=2}^{G} 1/q − log log G} = 0.2614972128
+  (i.e., the Meissel–Mertens constant to 10 digits, agreeing with
+  modern OEIS A077761).  Mertens' explicit error bound, p. 56, is
+       |ε|, |ε'| ≤ (2+C)/log(G+1) + 1/(G · log G)
+  for an absolute constant `C`, asymptotically `O(1/log G)`.  This
+  is precisely the explicit form used in this axiom.
+
+* Hardy–Wright, *An Introduction to the Theory of Numbers*, 6th ed.
+  (rev. Heath-Brown and Silverman), OUP 2008, §22 (verified directly
+  against the digitized djvu edition):
+  - **Theorem 425** states `∑_{p ≤ x} (log p)/p = log x + O(1)`,
+  - **Theorem 427** states only `∑_{p ≤ x} 1/p = log log x + B₁ + o(1)`,
+    so the explicit `O(1/log t)` rate is *not* in HW Thm 427 itself.
 
 Proven unconditionally; predates the Prime Number Theorem. -/
 axiom mertens :
