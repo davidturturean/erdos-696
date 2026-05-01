@@ -86,7 +86,7 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 #### 1. `siegel_walfisz` — Davenport §22 eq. (4)
 
 > *Let `N` be any positive constant.  Then there exists a positive number `C₃(N)`, depending only on `N`, such that if `q ≤ (log x)^N` then*
-> $$\psi(x; q, a) \;=\; \frac{x}{\varphi(q)} \;+\; O\!\bigl\{x \exp\bigl[-C_3(N)(\log x)^{1/2}\bigr]\bigr\}$$
+> $$\psi(x; q, a) = \frac{x}{\varphi(q)} + O\left( x \cdot \exp(-C_3(N) \sqrt{\log x}) \right)$$
 > *uniformly in `q`, for every `(a, q) = 1`.*
 
 **Lean form** (π-version, by partial summation as in Davenport p.133):
@@ -99,7 +99,7 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 #### 2. `brun_titchmarsh` — Iwaniec-Kowalski Theorem 6.6
 
 > *For `(a, q) = 1` and `1 ≤ q < y`,*
-> $$\pi(x + y; q, a) - \pi(x; q, a) \;<\; \frac{2y}{\varphi(q) \log(y/q)} + O\!\Bigl(\frac{y}{q \log^2(y/q)}\Bigr)$$
+> $$\pi(x + y; q, a) - \pi(x; q, a) < \frac{2y}{\varphi(q) \log(y/q)} + O\left(\frac{y}{q \log^2(y/q)}\right)$$
 > *where the implied constant is absolute.*
 
 **Lean form** (specialization to `x = 0`, error absorbed into one constant):
@@ -116,7 +116,7 @@ The formalization is `0 sorries` and depends on **3 classical analytic NT axioms
 - p. 56: Mertens proves the explicit bound `|ε|, |ε'| ≤ (2+C)/log(G+1) + 1/(G·log G)`, asymptotically `O(1/log G)`.
 
 > *There is an absolute constant `M ∈ ℝ` (the Meissel–Mertens constant, `M ≈ 0.2614972128…`) such that, for all `t ≥ 2`,*
-> $$\sum_{p \le t,\, p\text{ prime}} \frac{1}{p} \;=\; \log\log t + M + O\!\bigl(1/\log t\bigr).$$
+> $$\sum_{p \le t,\ p\text{ prime}} \frac{1}{p} = \log\log t + M + O\left(\frac{1}{\log t}\right)$$
 
 **Note on Hardy-Wright:** Hardy-Wright Theorem 427 (verified directly here against the 2008 OUP edition) states only the weaker `o(1)` form. The explicit `O(1/log t)` rate is from Mertens' original 1874 paper, not from HW Thm 427.
 
